@@ -141,7 +141,7 @@ export function History() {
                     className="pl-5 basis-[85%] md:basis-[45%] lg:basis-[calc(100%/3.2)]"
                   >
                     <article className="flex h-full flex-col rounded-xl border border-border bg-background p-6">
-                      <ImagePlaceholder label="Foto" ratio="aspect-[4/3]" className="mb-4" />
+                      <ImagePlaceholder label="Foto" ratio="aspect-[3/4]" className="mb-4" />
                       <p className="font-display text-lg font-bold text-brand">{leader.name}</p>
                       <p className="mt-1 text-sm font-semibold text-brand-medium">{leader.role}</p>
                       <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>

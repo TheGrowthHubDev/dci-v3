@@ -31,9 +31,9 @@ export function WhatIs() {
           </p>
         </Reveal>
 
-        <div className="mt-14 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-center">
-          <Reveal>
-            <div className="rounded-xl border border-border bg-surface p-8">
+        <div className="mt-14 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+          <Reveal className="h-full">
+            <div className="flex h-full flex-col rounded-xl border border-border bg-surface p-8">
               <div className="mx-auto mb-8 w-fit rounded-full bg-brand px-8 py-3 font-display text-xl font-bold tracking-[0.2em] text-brand-foreground">
                 STEAM
               </div>
@@ -48,14 +48,14 @@ export function WhatIs() {
                   </li>
                 ))}
               </ul>
-              <p className="mt-8 text-center text-sm text-muted-foreground">
+              <p className="mt-auto pt-8 text-center text-sm text-muted-foreground">
                 É o princípio <strong className="text-brand">hands-on, minds-on</strong>: participação
                 ativa para transformar curiosidade em aprendizado.
               </p>
             </div>
           </Reveal>
 
-          <Reveal delay={100} className="space-y-6">
+          <Reveal delay={100} className="flex h-full flex-col justify-center space-y-6">
             <p className="text-base leading-relaxed text-muted-foreground">
               O Discovery Centre opera essa abordagem há quatro décadas no Canadá. Em 2021, essa
               experiência deu origem ao{" "}

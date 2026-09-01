@@ -1,5 +1,12 @@
 import { Mail } from "lucide-react";
 import { CONTACT_EMAIL, ImagePlaceholder, Reveal, SectionTag } from "./shared";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+} from "@/components/ui/carousel";
 
 const TIMELINE = [
   {
@@ -30,38 +37,30 @@ const LEADERS = [
     name: "Dov Bercovici",
     role: "President & CEO",
     bio: "Reconhecido no Top 50 CEO Hall of Fame, liderou a reconstrução do Discovery Centre em Halifax, da mobilização de capital à inauguração da sede atual em 2017.",
-    featured: true,
   },
   {
     name: "Marcos Miranda",
     role: "VP of International Business Development, Discovery Centre International",
     bio: "Mais de 25 países de experiência em expansão internacional, à frente da condução do projeto no Brasil.",
-    featured: true,
   },
   {
     name: "Ryan Jameson",
     role: "Director of Science Education",
     bio: "Liderança responsável pela frente de educação científica e pela aplicação da experiência pedagógica do Discovery Centre.",
-    featured: false,
   },
   {
     name: "Ruth Munro",
     role: "Director of Exhibits & Facilities",
     bio: "Liderança ligada à experiência física, exposições e infraestrutura do Discovery Centre.",
-    featured: false,
   },
   {
     name: "Helen Dolan",
     role: "Director of Partnerships",
     bio: "Liderança dedicada à construção e gestão de parcerias institucionais.",
-    featured: false,
   },
 ];
 
 export function History() {
-  const featured = LEADERS.filter((l) => l.featured);
-  const others = LEADERS.filter((l) => !l.featured);
-
   return (
     <section id="nossa-historia" className="bg-surface py-20 lg:py-28">
       <div className="mx-auto max-w-7xl px-5 lg:px-8">
@@ -125,49 +124,41 @@ export function History() {
             </h3>
           </Reveal>
 
-          <div className="mt-8 grid gap-6 md:grid-cols-2">
-            {featured.map((leader, i) => (
-              <Reveal key={leader.name} delay={i * 90}>
-                <article className="flex h-full flex-col gap-5 rounded-xl border border-border bg-background p-6 sm:flex-row">
-                  <ImagePlaceholder
-                    label="Foto"
-                    ratio="aspect-square"
-                    className="w-full shrink-0 sm:w-36"
-                  />
-                  <div className="flex flex-col">
-                    <p className="font-display text-xl font-bold text-brand">{leader.name}</p>
-                    <p className="mt-1 text-sm font-semibold text-brand-medium">{leader.role}</p>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>
-                    <a
-                      href={`mailto:${CONTACT_EMAIL}?subject=Contato%20-%20${encodeURIComponent(leader.name)}`}
-                      className="mt-4 inline-flex w-fit items-center gap-2 text-sm font-bold text-brand hover:underline"
-                    >
-                      <Mail className="size-4" aria-hidden="true" /> Enviar e-mail
-                    </a>
-                  </div>
-                </article>
-              </Reveal>
-            ))}
-          </div>
-
-          <div className="mt-6 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-            {others.map((leader, i) => (
-              <Reveal key={leader.name} delay={i * 80}>
-                <article className="flex h-full flex-col rounded-xl border border-border bg-background p-6">
-                  <ImagePlaceholder label="Foto" ratio="aspect-[4/3]" className="mb-4" />
-                  <p className="font-display text-lg font-bold text-brand">{leader.name}</p>
-                  <p className="mt-1 text-sm font-semibold text-brand-medium">{leader.role}</p>
-                  <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>
-                  <a
-                    href={`mailto:${CONTACT_EMAIL}?subject=Contato%20-%20${encodeURIComponent(leader.name)}`}
-                    className="mt-4 inline-flex w-fit items-center gap-2 text-sm font-bold text-brand hover:underline"
+          <Reveal className="mt-8">
+            <Carousel
+              opts={{
+                align: "start",
+                loop: false,
+                skipSnaps: false,
+                dragFree: false,
+              }}
+              className="w-full"
+            >
+              <CarouselContent className="-ml-5">
+                {LEADERS.map((leader) => (
+                  <CarouselItem
+                    key={leader.name}
+                    className="pl-5 basis-[85%] md:basis-[45%] lg:basis-[calc(100%/3.2)]"
                   >
-                    <Mail className="size-4" aria-hidden="true" /> Enviar e-mail
-                  </a>
-                </article>
-              </Reveal>
-            ))}
-          </div>
+                    <article className="flex h-full flex-col rounded-xl border border-border bg-background p-6">
+                      <ImagePlaceholder label="Foto" ratio="aspect-[4/3]" className="mb-4" />
+                      <p className="font-display text-lg font-bold text-brand">{leader.name}</p>
+                      <p className="mt-1 text-sm font-semibold text-brand-medium">{leader.role}</p>
+                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>
+                      <a
+                        href={`mailto:${CONTACT_EMAIL}?subject=Contato%20-%20${encodeURIComponent(leader.name)}`}
+                        className="mt-4 inline-flex w-fit items-center gap-2 text-sm font-bold text-brand hover:underline"
+                      >
+                        <Mail className="size-4" aria-hidden="true" /> Enviar e-mail
+                      </a>
+                    </article>
+                  </CarouselItem>
+                ))}
+              </CarouselContent>
+              <CarouselPrevious className="left-0 top-1/2 -translate-y-1/2 md:-left-12" />
+              <CarouselNext className="right-0 top-1/2 -translate-y-1/2 md:-right-12" />
+            </Carousel>
+          </Reveal>
         </div>
       </div>
     </section>

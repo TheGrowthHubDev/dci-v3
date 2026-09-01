@@ -31,9 +31,9 @@ export function WhatIs() {
           </p>
         </Reveal>
 
-        <div className="mt-14 grid gap-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-stretch">
+        <div className="mt-14 grid gap-10 lg:grid-cols-[0.75fr_1.25fr] lg:items-stretch">
           <Reveal className="h-full">
-            <div className="flex h-full flex-col items-center justify-center rounded-xl border border-border bg-surface p-8">
+            <div className="flex h-full flex-col items-center justify-center rounded-xl border border-border bg-surface p-6">
               <div className="mx-auto mb-8 w-fit rounded-full bg-brand px-8 py-3 font-display text-xl font-bold tracking-[0.2em] text-brand-foreground">
                 STEAM
               </div>

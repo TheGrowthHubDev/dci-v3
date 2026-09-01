@@ -112,8 +112,10 @@ export function Logo({ tone = "brand" }: { tone?: "brand" | "light" }) {
     <span className="flex items-center gap-3">
       <span
         className={cn(
-          "flex size-10 items-center justify-center rounded-md font-display text-sm font-bold lowercase tracking-tight",
-          isLight ? "bg-background text-brand" : "bg-brand text-brand-foreground",
+          "flex size-10 items-center justify-center rounded-md border font-display text-sm font-bold lowercase tracking-tight",
+          isLight
+            ? "border-white/40 bg-transparent text-white"
+            : "border-transparent bg-brand text-brand-foreground",
         )}
         aria-hidden="true"
       >
@@ -122,7 +124,7 @@ export function Logo({ tone = "brand" }: { tone?: "brand" | "light" }) {
       <span
         className={cn(
           "font-display text-[0.68rem] font-semibold uppercase leading-tight tracking-[0.16em]",
-          isLight ? "text-brand-foreground" : "text-brand",
+          isLight ? "text-white" : "text-brand",
         )}
       >
         Discovery Centre

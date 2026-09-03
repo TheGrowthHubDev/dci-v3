@@ -1,5 +1,16 @@
 import { Blocks, BookOpenCheck, Megaphone, RefreshCcw, type LucideIcon } from "lucide-react";
-import { ImagePlaceholder, Marquee, Reveal, SectionTag, useTilt } from "./shared";
+import { cn } from "@/lib/utils";
+import {
+  BrandOrbit,
+  ImagePlaceholder,
+  Marquee,
+  Reveal,
+  SectionNumber,
+  SectionTag,
+  WordReveal,
+  useMouseGlow,
+  useParallax,
+} from "./shared";
 
 const ITEMS = [
   {
@@ -74,63 +85,100 @@ function DifferentiatorCard({
   title,
   emphasis,
   text,
+  index,
 }: {
   icon: LucideIcon;
   title: string;
   emphasis: string;
   text: string;
+  index: number;
 }) {
-  const tiltRef = useTilt(3.5);
+  const ref = useMouseGlow<HTMLElement>();
   return (
-    <article
-      ref={tiltRef}
-      className="tilt-card h-full rounded-xl border border-border bg-surface p-6 hover:shadow-lg"
-    >
-      <Icon className="size-7 text-brand-medium" aria-hidden="true" />
-      <h3 className="mt-4 font-display text-lg font-bold text-brand">{title}</h3>
-      <p className="mt-1 text-xs font-bold uppercase tracking-widest text-brand-teal">{emphasis}</p>
-      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
+    <article ref={ref} className="card-premium group flex h-full flex-col p-7 lg:p-8">
+      <div className="flex items-center justify-between">
+        <span className="flex size-12 items-center justify-center rounded-2xl bg-brand/8 text-brand-medium transition-all duration-500 group-hover:bg-brand group-hover:text-white">
+          <Icon className="size-6" aria-hidden="true" />
+        </span>
+        <span className="text-outline text-4xl" aria-hidden="true">
+          0{index + 1}
+        </span>
+      </div>
+      <h3 className="mt-7 font-display text-2xl font-extrabold tracking-tight text-brand">{title}</h3>
+      <p className="mt-2 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-brand-teal">{emphasis}</p>
+      <p className="mt-4 flex-1 text-sm leading-relaxed text-muted-foreground lg:text-base">{text}</p>
     </article>
   );
 }
 
-export function Differentiators() {
+/**
+ * Painel abstrato de projeto (sem foto real disponível): grafismo de marca + título.
+ */
+function ProjectPanel({ index }: { index: number }) {
   return (
-    <section id="diferenciais" className="bg-background py-20 lg:py-28">
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <Reveal className="max-w-3xl">
-          <SectionTag>Diferenciais</SectionTag>
-          <h2 className="mt-5 font-display text-3xl font-bold leading-tight text-brand sm:text-4xl lg:text-5xl">
-            Projetos e Experiência: o valor do Modelo DCI
-          </h2>
-          <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            São quatro décadas lidando com visitantes, escolas, programas educacionais, exposições,
-            equipes, parceiros e a operação cotidiana de um centro de ciência.
-          </p>
-        </Reveal>
+    <div
+      className={cn(
+        "relative isolate aspect-[16/9] overflow-hidden",
+        index % 2 === 0
+          ? "bg-gradient-to-br from-brand-deep via-brand to-brand-medium"
+          : "bg-gradient-to-br from-brand via-brand-medium to-brand-teal",
+      )}
+      aria-hidden="true"
+    >
+      <div className="aurora opacity-60" />
+      <BrandOrbit className="absolute -right-16 -top-16 w-[260px] opacity-80" />
+      <div className="grid-lines absolute inset-0 text-white opacity-60" />
+      <span className="text-outline-light absolute bottom-4 left-6 text-7xl">0{index + 1}</span>
+    </div>
+  );
+}
 
-        <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
+export function Differentiators() {
+  const halifaxPhoto = useParallax<HTMLDivElement>(0.08);
+
+  return (
+    <section id="diferenciais" className="relative overflow-hidden bg-background py-24 lg:py-36">
+      <div className="pointer-events-none absolute -right-10 top-8 select-none" aria-hidden="true">
+        <SectionNumber n="06" />
+      </div>
+
+      <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="grid items-end gap-8 lg:grid-cols-[1.2fr_0.8fr]">
+          <div>
+            <Reveal variant="fade">
+              <SectionTag>Diferenciais</SectionTag>
+            </Reveal>
+            <WordReveal
+              text="Projetos e Experiência: o valor do Modelo DCI"
+              className="text-display-md mt-6 text-brand"
+              stagger={45}
+            />
+          </div>
+          <Reveal variant="blur" delay={300}>
+            <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
+              São quatro décadas lidando com visitantes, escolas, programas educacionais, exposições,
+              equipes, parceiros e a operação cotidiana de um centro de ciência.
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="mt-16 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {ITEMS.map((item, i) => (
-            <Reveal key={item.title} delay={i * 80}>
-              <DifferentiatorCard {...item} />
+            <Reveal key={item.title} delay={i * 90} className="h-full">
+              <DifferentiatorCard {...item} index={i} />
             </Reveal>
           ))}
         </div>
+      </div>
 
-        {/* Halifax */}
-        <Reveal className="mt-16 grid gap-8 rounded-xl bg-brand p-6 text-brand-foreground lg:grid-cols-2 lg:p-10">
-          <div>
-            <h3 className="font-display text-2xl font-bold sm:text-3xl">Halifax é a base do modelo.</h3>
-            <ul className="mt-6 space-y-3">
-              {HALIFAX.map((h) => (
-                <li key={h} className="flex gap-3 text-sm leading-relaxed text-brand-foreground/85">
-                  <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brand-light" aria-hidden="true" />
-                  {h}
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="photo-frame aspect-[16/10] rounded-lg border border-brand-foreground/25">
+      {/* Halifax: bloco full-bleed com foto e overlay */}
+      <Reveal variant="fade" className="relative mt-28 lg:mt-36">
+        <div className="relative isolate min-h-[560px] overflow-hidden text-white lg:min-h-[680px]">
+          <div
+            ref={halifaxPhoto}
+            className="absolute inset-[-12%]"
+            style={{ transform: "translateY(var(--py, 0px))" }}
+          >
             <img
               src="/images/dci/differentiators-halifax.jpg"
               alt="Sede do Discovery Centre em Halifax, Canadá"
@@ -138,25 +186,41 @@ export function Differentiators() {
               loading="lazy"
             />
           </div>
-        </Reveal>
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-deep via-brand-deep/80 to-brand-deep/20" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/90 via-transparent to-brand-deep/30" />
 
+          <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-center px-5 py-20 lg:min-h-[680px] lg:px-8">
+            <div className="max-w-2xl">
+              <WordReveal text="Halifax é a base do modelo." className="text-display text-white" />
+              <ul className="mt-12 grid gap-4 sm:grid-cols-2">
+                {HALIFAX.map((h, i) => (
+                  <Reveal key={h} as="li" variant="up" delay={200 + i * 100}>
+                    <div className="glass h-full rounded-2xl p-5">
+                      <span className="mb-3 block h-1 w-10 rounded-full bg-gradient-to-r from-brand-light to-brand-teal" aria-hidden="true" />
+                      <p className="font-display text-base font-semibold leading-snug text-white lg:text-lg">{h}</p>
+                    </div>
+                  </Reveal>
+                ))}
+              </ul>
+            </div>
+          </div>
+        </div>
+      </Reveal>
+
+      <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         {/* Adaptação cultural */}
-        <div className="mt-16">
-          <Reveal>
-            <h3 className="font-display text-2xl font-bold text-brand">Adaptação cultural na prática</h3>
+        <div className="mt-28">
+          <Reveal variant="fade">
+            <h3 className="text-display-md text-brand">Adaptação cultural na prática</h3>
           </Reveal>
-          <div className="mt-6 grid gap-6 md:grid-cols-2">
+          <div className="mt-10 grid gap-6 md:grid-cols-2">
             {PROJECTS.map((p, i) => (
-              <Reveal key={p.title} delay={i * 90}>
-                <article className="h-full overflow-hidden rounded-xl border border-border bg-surface">
-                  <ImagePlaceholder
-                    label={`Projeto ${p.title}`}
-                    ratio="aspect-[16/9]"
-                    className="rounded-none border-0 border-b border-dashed"
-                  />
-                  <div className="p-6">
-                    <h4 className="font-display text-lg font-bold text-brand">{p.title}</h4>
-                    <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{p.text}</p>
+              <Reveal key={p.title} delay={i * 120} variant="scale">
+                <article className="card-premium h-full overflow-hidden">
+                  <ProjectPanel index={i} />
+                  <div className="p-7 lg:p-8">
+                    <h4 className="font-display text-2xl font-extrabold tracking-tight text-brand">{p.title}</h4>
+                    <p className="mt-3 text-base leading-relaxed text-muted-foreground">{p.text}</p>
                   </div>
                 </article>
               </Reveal>
@@ -165,18 +229,16 @@ export function Differentiators() {
         </div>
 
         {/* Parceiros */}
-        <div className="mt-16">
-          <Reveal>
-            <h3 className="font-display text-2xl font-bold text-brand">
-              Parceiros acadêmicos e institucionais
-            </h3>
+        <div className="mt-28">
+          <Reveal variant="fade">
+            <h3 className="text-display-md text-brand">Parceiros acadêmicos e institucionais</h3>
           </Reveal>
-          <div className="mt-6 grid gap-6 md:grid-cols-3">
+          <div className="mt-10 grid gap-5 md:grid-cols-3">
             {PARTNERS.map((p, i) => (
-              <Reveal key={p.name} delay={i * 80}>
-                <article className="flex h-full flex-col rounded-xl border border-border p-6">
+              <Reveal key={p.name} delay={i * 100} className="h-full">
+                <article className="card-premium flex h-full flex-col p-7">
                   {p.logo ? (
-                    <div className="mb-4 flex aspect-[5/2] items-center justify-center rounded-lg border border-border bg-background p-4">
+                    <div className="mb-6 flex aspect-[5/2] items-center justify-center rounded-xl bg-surface p-5">
                       <img
                         src={p.logo}
                         alt={`Logo ${p.name}`}
@@ -185,9 +247,9 @@ export function Differentiators() {
                       />
                     </div>
                   ) : (
-                    <ImagePlaceholder label={`Logo ${p.name}`} ratio="aspect-[5/2]" className="mb-4" />
+                    <ImagePlaceholder label={`Logo ${p.name}`} ratio="aspect-[5/2]" className="mb-6 rounded-xl" />
                   )}
-                  <p className="font-display text-base font-bold text-brand">{p.name}</p>
+                  <p className="font-display text-lg font-bold text-brand">{p.name}</p>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.text}</p>
                 </article>
               </Reveal>
@@ -196,20 +258,24 @@ export function Differentiators() {
         </div>
 
         {/* Faixa de apoiadores */}
-        <div className="mt-16">
-          <Reveal>
-            <h3 className="font-display text-2xl font-bold text-brand">Ecossistema de apoio em Halifax</h3>
+        <div className="mt-28">
+          <Reveal variant="fade" className="text-center">
+            <h3 className="eyebrow justify-center text-brand-grey">
+              <span className="h-px w-8 bg-brand-teal" aria-hidden="true" />
+              Ecossistema de apoio em Halifax
+              <span className="h-px w-8 bg-brand-teal" aria-hidden="true" />
+            </h3>
           </Reveal>
-          <Reveal delay={60}>
-            <div className="mt-6 rounded-xl border border-border bg-surface py-8">
+          <Reveal delay={80} variant="fade">
+            <div className="mask-fade-x mt-10 py-6">
               <Marquee>
                 {SUPPORT_LOGOS.map((l) => (
-                  <div key={l.name} className="flex h-10 w-32 shrink-0 items-center justify-center">
+                  <div key={l.name} className="flex h-12 w-36 shrink-0 items-center justify-center">
                     <img
                       src={l.src}
                       alt={l.name}
                       title={l.name}
-                      className="max-h-10 w-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                      className="max-h-12 w-full object-contain opacity-60 grayscale transition-all duration-500 hover:opacity-100 hover:grayscale-0"
                       loading="lazy"
                     />
                   </div>

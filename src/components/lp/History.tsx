@@ -1,7 +1,15 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { Mail } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { CONTACT_EMAIL, Counter, ImagePlaceholder, Reveal, SectionTag } from "./shared";
+import {
+  CONTACT_EMAIL,
+  Counter,
+  Reveal,
+  SectionNumber,
+  SectionTag,
+  WordReveal,
+  useMouseGlow,
+} from "./shared";
 import {
   Carousel,
   CarouselContent,
@@ -62,12 +70,27 @@ const LEADERS = [
   },
 ];
 
+function initials(name: string) {
+  return name
+    .split(" ")
+    .map((p) => p[0])
+    .join("")
+    .slice(0, 2)
+    .toUpperCase();
+}
+
+/**
+ * Timeline scrollytelling: a linha se preenche e os marcos acendem conforme o scroll.
+ */
 function Timeline() {
   const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
   const [activeIndex, setActiveIndex] = useState(0);
 
   useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      setActiveIndex(TIMELINE.length - 1);
+      return;
+    }
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
@@ -77,114 +100,183 @@ function Timeline() {
           }
         });
       },
-      { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
+      { rootMargin: "-35% 0px -35% 0px", threshold: 0 },
     );
     itemRefs.current.forEach((el) => el && observer.observe(el));
     return () => observer.disconnect();
   }, []);
 
+  const fill = TIMELINE.length > 1 ? activeIndex / (TIMELINE.length - 1) : 1;
+
   return (
-    <ol className="relative grid gap-8 border-l border-border pl-6 lg:grid-cols-6 lg:gap-6 lg:border-l-0 lg:border-t lg:pl-0 lg:pt-10">
-      {TIMELINE.map((item, i) => {
-        const passed = i <= activeIndex;
-        return (
-          <li
-            key={item.year}
-            ref={(el) => {
-              itemRefs.current[i] = el;
-            }}
-            data-index={i}
-            className="relative lg:pr-4"
-          >
-            <span
-              className={cn(
-                "absolute -left-[1.66rem] top-1 size-3 rounded-full ring-4 ring-surface transition-all duration-500 lg:-top-[3.1rem] lg:left-0",
-                passed ? "scale-110 bg-brand" : "bg-brand-light/40",
-              )}
-              aria-hidden="true"
-            />
-            <p
-              className={cn(
-                "font-display text-lg font-bold transition-colors duration-500",
-                passed ? "text-brand" : "text-brand/40",
-              )}
+    <div className="relative">
+      {/* Linha horizontal (desktop) */}
+      <div
+        className="timeline-fill absolute left-0 right-0 top-[7px] hidden h-0.5 rounded-full lg:block"
+        style={{ "--fill": fill } as CSSProperties}
+        aria-hidden="true"
+      />
+      {/* Linha vertical (mobile) */}
+      <div
+        className="timeline-fill absolute bottom-0 left-[7px] top-0 w-0.5 rounded-full lg:hidden"
+        style={{ "--fill-transform": `scaleY(${fill})` } as CSSProperties}
+        aria-hidden="true"
+      />
+
+      <ol className="relative grid gap-10 pl-10 lg:grid-cols-6 lg:gap-6 lg:pl-0 lg:pt-12">
+        {TIMELINE.map((item, i) => {
+          const passed = i <= activeIndex;
+          const isCurrent = i === activeIndex;
+          return (
+            <li
+              key={item.year}
+              ref={(el) => {
+                itemRefs.current[i] = el;
+              }}
+              data-index={i}
+              className="relative lg:pr-4"
             >
-              {item.year}
-            </p>
-            <p
-              className={cn(
-                "mt-2 text-sm leading-relaxed transition-opacity duration-500",
-                passed ? "text-muted-foreground opacity-100" : "text-muted-foreground opacity-50",
-              )}
-            >
-              {item.text}
-            </p>
-          </li>
-        );
-      })}
-    </ol>
+              <span
+                className={cn(
+                  "absolute -left-10 top-0 flex size-4 items-center justify-center rounded-full ring-4 ring-surface transition-all duration-500 lg:-top-12 lg:left-0",
+                  passed ? "bg-brand" : "bg-border",
+                  isCurrent && "ring-pulse text-brand-light",
+                )}
+                aria-hidden="true"
+              >
+                <span className={cn("size-1.5 rounded-full", passed ? "bg-brand-light" : "bg-transparent")} />
+              </span>
+              <p
+                className={cn(
+                  "font-display text-xl font-extrabold tracking-tight transition-all duration-500 lg:text-2xl",
+                  passed ? "text-brand" : "text-brand/30",
+                  isCurrent && "text-gradient-deep",
+                )}
+              >
+                {item.year}
+              </p>
+              <p
+                className={cn(
+                  "mt-3 text-sm leading-relaxed text-muted-foreground transition-opacity duration-500",
+                  passed ? "opacity-100" : "opacity-40",
+                )}
+              >
+                {item.text}
+              </p>
+            </li>
+          );
+        })}
+      </ol>
+    </div>
+  );
+}
+
+function LeaderCard({ leader }: { leader: (typeof LEADERS)[number] }) {
+  const ref = useMouseGlow<HTMLElement>();
+  return (
+    <article ref={ref} className="card-premium flex h-full flex-col p-7">
+      <div className="flex items-center gap-4">
+        <span
+          className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand via-brand-medium to-brand-light font-display text-xl font-extrabold text-white shadow-lg"
+          aria-hidden="true"
+        >
+          {initials(leader.name)}
+        </span>
+        <div>
+          <p className="font-display text-lg font-bold leading-tight text-brand">{leader.name}</p>
+          <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-brand-medium">
+            {leader.role}
+          </p>
+        </div>
+      </div>
+      <p className="mt-5 flex-1 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>
+      <a
+        href={`mailto:${CONTACT_EMAIL}?subject=Contato%20-%20${encodeURIComponent(leader.name)}`}
+        className="nav-underline mt-6 inline-flex w-fit items-center gap-2 text-sm font-bold text-brand"
+      >
+        <Mail className="size-4" aria-hidden="true" /> Enviar e-mail
+      </a>
+    </article>
   );
 }
 
 export function History() {
   return (
-    <section id="nossa-historia" className="bg-surface py-20 lg:py-28">
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <Reveal className="max-w-3xl">
-          <SectionTag>Nossa História</SectionTag>
-          <h2 className="mt-5 font-display text-3xl font-bold leading-tight text-brand sm:text-4xl lg:text-5xl">
-            A Origem do Discovery Centre
-          </h2>
-          <div className="mt-6 space-y-4 text-base leading-relaxed text-muted-foreground">
-            <p>
-              O Discovery Centre começou a tomar forma na década de 1970, a partir de demonstrações
-              científicas interativas desenvolvidas em Halifax.
-            </p>
-            <p>
-              A iniciativa cresceu, ganhou as ruas com programas itinerantes e, em{" "}
-              <strong className="text-brand">1985</strong>, tornou-se formalmente o Discovery Centre.
-            </p>
-            <p>
-              Décadas depois, esse mesmo projeto reuniu apoio do Governo Canadense, do setor privado e
-              da comunidade para construir, do zero, um centro de quatro andares em Halifax, concebido
-              para receber experiências interativas, galerias, laboratórios e programação educacional.
-            </p>
-          </div>
-        </Reveal>
+    <section id="nossa-historia" className="relative overflow-hidden bg-surface py-24 lg:py-36">
+      <div className="pointer-events-none absolute -right-10 top-10 select-none" aria-hidden="true">
+        <SectionNumber n="02" />
+      </div>
 
-        {/* Timeline com scrollytelling: marcos se destacam conforme o scroll avança */}
-        <Reveal className="mt-14">
+      <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+        {/* Abertura: título + texto em coluna / foto da sede */}
+        <div className="grid items-end gap-12 lg:grid-cols-[1fr_0.9fr] lg:gap-16">
+          <div>
+            <Reveal variant="fade">
+              <SectionTag>Nossa História</SectionTag>
+            </Reveal>
+            <WordReveal text="A Origem do Discovery Centre" className="text-display-md mt-6 text-brand" />
+            <Reveal variant="blur" delay={300} className="mt-8 space-y-5 text-base leading-relaxed text-muted-foreground lg:text-lg">
+              <p>
+                O Discovery Centre começou a tomar forma na década de 1970, a partir de demonstrações
+                científicas interativas desenvolvidas em Halifax.
+              </p>
+              <p>
+                A iniciativa cresceu, ganhou as ruas com programas itinerantes e, em{" "}
+                <strong className="text-brand">1985</strong>, tornou-se formalmente o Discovery Centre.
+              </p>
+              <p>
+                Décadas depois, esse mesmo projeto reuniu apoio do Governo Canadense, do setor privado e
+                da comunidade para construir, do zero, um centro de quatro andares em Halifax, concebido
+                para receber experiências interativas, galerias, laboratórios e programação educacional.
+              </p>
+            </Reveal>
+          </div>
+
+          <Reveal variant="right" delay={200} className="relative">
+            <div className="photo-premium relative shadow-2xl">
+              <img
+                src="/images/dci/history-sede-2017.jpg"
+                alt="Escadaria da sede atual do Discovery Centre, com mural que vai da Terra ao espaço"
+                className="aspect-[4/5] w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+            {/* Estatística flutuando sobre a foto */}
+            <div className="glass-light absolute -bottom-8 -left-4 max-w-[260px] rounded-2xl p-6 shadow-xl sm:-left-10">
+              <p className="text-gradient-deep font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
+                ≈ <Counter value={2} suffix=" milhões" />
+              </p>
+              <p className="mt-2 text-sm leading-snug text-muted-foreground">
+                de visitantes recebidos ao longo da trajetória do Discovery Centre.
+              </p>
+            </div>
+          </Reveal>
+        </div>
+
+        {/* Timeline com scrollytelling */}
+        <Reveal variant="fade" className="mt-28 lg:mt-36">
           <Timeline />
         </Reveal>
 
-        <Reveal className="mt-12 grid gap-6 lg:grid-cols-[1fr_1fr]">
-          <div className="flex flex-col justify-center rounded-xl bg-brand p-8 text-brand-foreground">
-            <p className="font-display text-4xl font-bold sm:text-5xl">
-              ≈ <Counter value={2} suffix=" milhões" />
-            </p>
-            <p className="mt-3 text-sm text-brand-foreground/80">
-              de visitantes recebidos ao longo da trajetória do Discovery Centre.
-            </p>
-          </div>
-          <div className="photo-frame aspect-[16/9] rounded-lg">
+        {/* Foto ampla da galeria atual */}
+        <Reveal variant="scale" className="mt-20">
+          <div className="photo-premium relative shadow-2xl">
             <img
               src="/images/dci/history-galeria-atual.jpg"
               alt="Uma das galerias do Discovery Centre em operação"
-              className="h-full w-full object-cover"
+              className="aspect-[21/9] w-full object-cover"
               loading="lazy"
             />
           </div>
         </Reveal>
 
         {/* Liderança */}
-        <div className="mt-20">
-          <Reveal className="max-w-2xl">
-            <h3 className="font-display text-2xl font-bold text-brand sm:text-3xl">
-              Quem estrutura o projeto
-            </h3>
+        <div className="mt-28">
+          <Reveal variant="fade" className="max-w-2xl">
+            <h3 className="text-display-md text-brand">Quem estrutura o projeto</h3>
           </Reveal>
 
-          <Reveal className="mt-8">
+          <Reveal className="mt-10">
             <Carousel
               opts={{
                 align: "start",
@@ -198,20 +290,9 @@ export function History() {
                 {LEADERS.map((leader) => (
                   <CarouselItem
                     key={leader.name}
-                    className="pl-5 basis-[85%] md:basis-[45%] lg:basis-[calc(100%/3.2)]"
+                    className="basis-[85%] pl-5 md:basis-[45%] lg:basis-[calc(100%/3.2)]"
                   >
-                    <article className="flex h-full flex-col rounded-xl border border-border bg-background p-6">
-                      <ImagePlaceholder label="Foto" ratio="aspect-[3/4]" className="mb-4" />
-                      <p className="font-display text-lg font-bold text-brand">{leader.name}</p>
-                      <p className="mt-1 text-sm font-semibold text-brand-medium">{leader.role}</p>
-                      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>
-                      <a
-                        href={`mailto:${CONTACT_EMAIL}?subject=Contato%20-%20${encodeURIComponent(leader.name)}`}
-                        className="mt-4 inline-flex w-fit items-center gap-2 text-sm font-bold text-brand hover:underline"
-                      >
-                        <Mail className="size-4" aria-hidden="true" /> Enviar e-mail
-                      </a>
-                    </article>
+                    <LeaderCard leader={leader} />
                   </CarouselItem>
                 ))}
               </CarouselContent>

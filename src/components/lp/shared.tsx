@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type ReactNode } from "react";
+import { useEffect, useRef, useState, type CSSProperties, type ReactNode } from "react";
 import { ImageIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 
@@ -22,16 +22,13 @@ export const NAV_LINKS = [
   { label: "Fale Conosco", href: "#fale-conosco" },
 ];
 
-export function Reveal({
-  children,
-  className,
-  delay = 0,
-}: {
-  children: ReactNode;
-  className?: string;
-  delay?: number;
-}) {
-  const ref = useRef<HTMLDivElement>(null);
+export type RevealVariant = "up" | "fade" | "scale" | "left" | "right" | "blur" | "wipe";
+
+/**
+ * Hook: observa um elemento e devolve `true` na primeira vez que entra em viewport.
+ */
+export function useInView<T extends HTMLElement>(threshold = 0.12) {
+  const ref = useRef<T>(null);
   const [visible, setVisible] = useState(false);
 
   useEffect(() => {
@@ -44,21 +41,227 @@ export function Reveal({
           observer.disconnect();
         }
       },
-      { threshold: 0.12 },
+      { threshold },
     );
     observer.observe(el);
     return () => observer.disconnect();
-  }, []);
+  }, [threshold]);
+
+  return { ref, visible };
+}
+
+export function Reveal({
+  children,
+  className,
+  delay = 0,
+  variant = "up",
+  as = "div",
+}: {
+  children: ReactNode;
+  className?: string;
+  delay?: number;
+  variant?: RevealVariant;
+  as?: "div" | "li" | "article" | "section" | "figure";
+}) {
+  const { ref, visible } = useInView<HTMLDivElement>();
+  const Tag = as as "div";
 
   return (
-    <div
+    <Tag
       ref={ref}
       className={cn("reveal", className)}
       data-visible={visible}
+      data-variant={variant}
       style={{ transitionDelay: `${delay}ms` }}
     >
       {children}
-    </div>
+    </Tag>
+  );
+}
+
+/**
+ * Revela um título palavra por palavra (sobe de baixo, com stagger).
+ * Recebe APENAS string: o texto renderizado é idêntico ao original.
+ */
+export function WordReveal({
+  text,
+  className,
+  stagger = 60,
+  delay = 0,
+  as: Tag = "h2",
+}: {
+  text: string;
+  className?: string;
+  stagger?: number;
+  delay?: number;
+  as?: "h1" | "h2" | "h3" | "p" | "span";
+}) {
+  const { ref, visible } = useInView<HTMLElement>(0.2);
+  const words = text.split(" ");
+
+  return (
+    <Tag ref={ref as never} className={className} data-visible={visible} aria-label={text}>
+      {words.map((word, i) => (
+        <span key={`${word}-${i}`} aria-hidden="true">
+          <span className="word-reveal">
+            <span style={{ "--wd": `${delay + i * stagger}ms` } as CSSProperties}>{word}</span>
+          </span>
+          {i < words.length - 1 ? " " : null}
+        </span>
+      ))}
+    </Tag>
+  );
+}
+
+/**
+ * Barra de progresso de leitura (fixa no header).
+ */
+export function ScrollProgress({ className }: { className?: string }) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    let raf = 0;
+    const update = () => {
+      const doc = document.documentElement;
+      const max = doc.scrollHeight - doc.clientHeight;
+      const p = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
+      el.style.setProperty("--progress", p.toFixed(4));
+      raf = 0;
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, []);
+
+  return <div ref={ref} className={cn("scroll-progress", className)} aria-hidden="true" />;
+}
+
+/**
+ * Hook: atualiza `--mx/--my` (px) no elemento para o spotlight de `card-premium`.
+ */
+export function useMouseGlow<T extends HTMLElement = HTMLDivElement>() {
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+    function onMove(e: MouseEvent) {
+      const rect = el!.getBoundingClientRect();
+      el!.style.setProperty("--mx", `${e.clientX - rect.left}px`);
+      el!.style.setProperty("--my", `${e.clientY - rect.top}px`);
+    }
+    el.addEventListener("mousemove", onMove);
+    return () => el.removeEventListener("mousemove", onMove);
+  }, []);
+
+  return ref;
+}
+
+/**
+ * Hook: parallax vertical leve (translateY proporcional ao scroll) via `--py` em px.
+ */
+export function useParallax<T extends HTMLElement = HTMLDivElement>(speed = 0.15) {
+  const ref = useRef<T>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let raf = 0;
+    const update = () => {
+      const rect = el!.getBoundingClientRect();
+      const center = rect.top + rect.height / 2 - window.innerHeight / 2;
+      el!.style.setProperty("--py", `${(-center * speed).toFixed(1)}px`);
+      raf = 0;
+    };
+    const onScroll = () => {
+      if (!raf) raf = requestAnimationFrame(update);
+    };
+    update();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    window.addEventListener("resize", onScroll);
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      window.removeEventListener("resize", onScroll);
+      if (raf) cancelAnimationFrame(raf);
+    };
+  }, [speed]);
+
+  return ref;
+}
+
+/**
+ * Grafismo de marca: anéis orbitais concêntricos em SVG (decorativo).
+ */
+export function BrandOrbit({
+  className,
+  tone = "light",
+}: {
+  className?: string;
+  tone?: "light" | "brand";
+}) {
+  const stroke = tone === "light" ? "rgba(255,255,255,0.18)" : "rgba(42,56,143,0.16)";
+  const accent = tone === "light" ? "var(--brand-light)" : "var(--brand-medium)";
+  return (
+    <svg
+      viewBox="0 0 600 600"
+      className={cn("pointer-events-none select-none", className)}
+      aria-hidden="true"
+      fill="none"
+    >
+      <g className="spin-slow">
+        <circle cx="300" cy="300" r="280" stroke={stroke} strokeDasharray="4 10" />
+        <circle cx="300" cy="20" r="5" fill={accent} />
+      </g>
+      <g className="spin-slow-reverse">
+        <circle cx="300" cy="300" r="210" stroke={stroke} />
+        <circle cx="510" cy="300" r="4" fill="var(--brand-teal)" />
+      </g>
+      <g className="spin-slow">
+        <circle cx="300" cy="300" r="140" stroke={stroke} strokeDasharray="2 6" />
+        <circle cx="300" cy="440" r="3" fill={accent} />
+      </g>
+      <circle cx="300" cy="300" r="70" stroke={stroke} />
+      <circle cx="300" cy="300" r="3" fill={accent} />
+    </svg>
+  );
+}
+
+/**
+ * Número decorativo de seção (kicker "01", "02"...). Marcado aria-hidden:
+ * é ornamento visual, não conteúdo.
+ */
+export function SectionNumber({
+  n,
+  tone = "brand",
+  className,
+}: {
+  n: string;
+  tone?: "brand" | "light";
+  className?: string;
+}) {
+  return (
+    <span
+      className={cn(
+        tone === "brand" ? "text-outline" : "text-outline-light",
+        "text-[5.5rem] leading-none sm:text-[7rem] lg:text-[9rem]",
+        className,
+      )}
+      aria-hidden="true"
+    >
+      {n}
+    </span>
   );
 }
 

@@ -1,5 +1,6 @@
-import { Award, Building2, Landmark, PencilLine, Users, type LucideIcon } from "lucide-react";
-import { Reveal, SectionTag, useTilt } from "./shared";
+import { ArrowRight, Award, Building2, Landmark, PencilLine, Users, type LucideIcon } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { BrandOrbit, Reveal, SectionNumber, SectionTag, useMouseGlow } from "./shared";
 
 type AudienceCardData = {
   icon: LucideIcon;
@@ -9,6 +10,7 @@ type AudienceCardData = {
   closing?: string;
   highlight?: { title: string; text: string };
   proof?: string;
+  featured?: boolean;
 };
 
 /**
@@ -65,6 +67,7 @@ const CARDS: AudienceCardData[] = [
       title: "Um legado que pode levar o seu nome.",
       text: "O projeto pode criar oportunidades de naming rights para associar uma família, fundação ou organização a um legado educacional permanente, do centro como um todo a espaços e experiências específicas, conforme a estrutura definida para cada projeto.",
     },
+    featured: true,
   },
   {
     icon: Landmark,
@@ -82,36 +85,97 @@ const CARDS: AudienceCardData[] = [
   },
 ];
 
-function AudienceCard({ icon: Icon, title, lead, bullets, closing, highlight, proof }: AudienceCardData) {
-  const tiltRef = useTilt(3);
+function AudienceCard({
+  icon: Icon,
+  title,
+  lead,
+  bullets,
+  closing,
+  highlight,
+  proof,
+  featured = false,
+  index,
+}: AudienceCardData & { index: number }) {
+  const ref = useMouseGlow<HTMLElement>();
   return (
     <article
-      ref={tiltRef}
-      className="tilt-card flex h-full flex-col rounded-xl border border-border bg-background p-7 hover:shadow-lg"
+      ref={ref}
+      className={cn(
+        "group relative flex h-full flex-col overflow-hidden p-7 lg:p-8",
+        featured ? "card-premium-dark bg-brand-deep text-white" : "card-premium",
+      )}
     >
-      <Icon className="size-8 text-brand-medium" aria-hidden="true" />
-      <h3 className="mt-5 font-display text-xl font-bold text-brand">{title}</h3>
-      <p className="mt-3 text-sm leading-relaxed text-foreground">{lead}</p>
-      <ul className="mt-5 space-y-3">
+      {featured && (
+        <>
+          <div className="aurora opacity-70" aria-hidden="true" />
+          <BrandOrbit className="absolute -right-24 -top-24 w-[320px] opacity-70" />
+        </>
+      )}
+
+      <div className="relative flex items-start justify-between">
+        <span
+          className={cn(
+            "flex size-12 items-center justify-center rounded-2xl transition-transform duration-500 group-hover:-rotate-6 group-hover:scale-110",
+            featured ? "bg-white text-brand" : "bg-brand/8 text-brand-medium",
+          )}
+        >
+          <Icon className="size-6" aria-hidden="true" />
+        </span>
+        <span className={cn("text-4xl", featured ? "text-outline-light" : "text-outline")} aria-hidden="true">
+          0{index + 1}
+        </span>
+      </div>
+
+      <h3
+        className={cn(
+          "relative mt-7 font-display text-2xl font-extrabold tracking-tight lg:text-3xl",
+          featured ? "text-white" : "text-brand",
+        )}
+      >
+        {title}
+      </h3>
+      <p className={cn("relative mt-4 text-base leading-relaxed", featured ? "text-white/90" : "text-foreground")}>
+        {lead}
+      </p>
+
+      <ul className={cn("relative mt-6 space-y-3 border-t pt-6", featured ? "border-white/15" : "border-border")}>
         {bullets.map((b) => (
-          <li key={b} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
-            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brand-light" aria-hidden="true" />
+          <li
+            key={b}
+            className={cn("flex gap-3 text-sm leading-relaxed", featured ? "text-white/80" : "text-muted-foreground")}
+          >
+            <span
+              className={cn(
+                "mt-2 size-1.5 shrink-0 rounded-full",
+                featured ? "bg-brand-light" : "bg-brand-light",
+              )}
+              aria-hidden="true"
+            />
             {b}
           </li>
         ))}
       </ul>
+
+      <div className="flex-1" />
+
       {highlight && (
-        <div className="mt-6 rounded-lg bg-brand p-5 text-brand-foreground">
-          <Award className="size-6 text-brand-light" aria-hidden="true" />
-          <p className="mt-3 font-display text-base font-bold">{highlight.title}</p>
-          <p className="mt-2 text-sm leading-relaxed text-brand-foreground/80">{highlight.text}</p>
+        <div className="glass relative mt-8 rounded-2xl p-6">
+          <span className="shimmer-border inline-flex size-11 items-center justify-center rounded-full bg-brand-teal text-white">
+            <Award className="size-5" aria-hidden="true" />
+          </span>
+          <p className="mt-4 font-display text-xl font-extrabold leading-tight tracking-tight text-white">
+            {highlight.title}
+          </p>
+          <p className="mt-3 text-sm leading-relaxed text-white/80">{highlight.text}</p>
         </div>
       )}
       {closing && (
-        <p className="mt-6 border-t border-border pt-5 text-sm font-semibold text-brand">{closing}</p>
+        <p className="relative mt-8 border-t border-border pt-6 font-display text-base font-semibold leading-snug text-brand">
+          {closing}
+        </p>
       )}
       {proof && (
-        <p className="mt-6 rounded-lg border-l-4 border-brand-teal bg-surface p-4 text-sm leading-relaxed text-foreground">
+        <p className="relative mt-8 rounded-2xl border-l-4 border-brand-teal bg-surface p-5 text-sm leading-relaxed text-foreground">
           {proof}
         </p>
       )}
@@ -121,77 +185,105 @@ function AudienceCard({ icon: Icon, title, lead, bullets, closing, highlight, pr
 
 export function Audience() {
   return (
-    <section id="para-quem-e" className="bg-surface py-20 lg:py-28">
-      <div className="mx-auto max-w-7xl px-5 lg:px-8">
-        <Reveal className="max-w-3xl">
-          <SectionTag>Para Quem É</SectionTag>
-          <h2 className="mt-5 font-display text-3xl font-bold leading-tight text-brand sm:text-4xl lg:text-5xl">
-            Um Discovery Centre começa com alguém disposto a construir <em className="not-italic text-brand-medium">legado</em>.
-          </h2>
-          <p className="mt-6 text-base leading-relaxed text-muted-foreground sm:text-lg">
-            O Discovery Centre International se estrutura ao lado de quem{" "}
-            <strong className="text-brand">opera</strong>, de quem{" "}
-            <strong className="text-brand">viabiliza o capital</strong> e de quem{" "}
-            <strong className="text-brand">cria as condições institucionais</strong> para o projeto
-            acontecer. Veja o que muda para cada perfil.
-          </p>
-        </Reveal>
+    <section id="para-quem-e" className="relative overflow-hidden bg-surface py-24 lg:py-36">
+      <div className="pointer-events-none absolute -left-10 top-8 select-none" aria-hidden="true">
+        <SectionNumber n="05" />
+      </div>
+      <div className="dot-grid pointer-events-none absolute inset-0 text-brand" aria-hidden="true" />
 
-        <div className="mt-14 grid gap-6 lg:grid-cols-3">
+      <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
+        <div className="mx-auto max-w-4xl text-center">
+          <Reveal variant="fade">
+            <SectionTag>Para Quem É</SectionTag>
+          </Reveal>
+          <Reveal variant="blur" delay={100}>
+            <h2 className="text-display-md mt-6 text-brand">
+              Um Discovery Centre começa com alguém disposto a construir{" "}
+              <em className="text-gradient not-italic">legado</em>.
+            </h2>
+          </Reveal>
+          <Reveal variant="fade" delay={300} className="mt-8">
+            <p className="text-base leading-relaxed text-muted-foreground sm:text-lg">
+              O Discovery Centre International se estrutura ao lado de quem{" "}
+              <strong className="text-brand">opera</strong>, de quem{" "}
+              <strong className="text-brand">viabiliza o capital</strong> e de quem{" "}
+              <strong className="text-brand">cria as condições institucionais</strong> para o projeto
+              acontecer. Veja o que muda para cada perfil.
+            </p>
+          </Reveal>
+        </div>
+
+        <div className="mt-16 grid gap-5 lg:grid-cols-3 lg:items-stretch">
           {CARDS.map((card, i) => (
-            <Reveal key={card.title} delay={i * 90}>
-              <AudienceCard {...card} />
+            <Reveal
+              key={card.title}
+              delay={i * 120}
+              variant={card.featured ? "scale" : "up"}
+              className={cn("h-full", card.featured && "lg:-my-6")}
+            >
+              <AudienceCard {...card} index={i} />
             </Reveal>
           ))}
         </div>
 
         {/* RASCUNHO — Naming rights (texto provisório, aguardando redação final da Isadora) */}
-        <Reveal className="mt-12 rounded-xl border-2 border-dashed border-brand-medium/50 bg-surface p-6 lg:p-10">
-          <div className="mb-6 flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-medium/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-brand-medium">
-              <PencilLine className="size-3.5" aria-hidden="true" />
-              Rascunho — texto provisório
-            </span>
-          </div>
-          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
-            <div>
-              <h3 className="font-display text-2xl font-bold text-brand">
-                Naming rights: legado com nome próprio
-              </h3>
-              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
-                {NAMING_RIGHTS_DRAFT.intro}
-              </p>
-              <p className="mt-4 rounded-lg border-l-4 border-brand-teal bg-background p-4 text-sm leading-relaxed text-foreground">
-                {NAMING_RIGHTS_DRAFT.example}
-              </p>
+        <Reveal variant="scale" className="mt-20">
+          <div className="card-premium relative overflow-hidden border-2 border-dashed border-brand-medium/40 p-7 lg:p-12">
+            <div className="mb-8 flex flex-wrap items-center gap-2">
+              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-medium/12 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-brand-medium">
+                <PencilLine className="size-3.5" aria-hidden="true" />
+                Rascunho — texto provisório
+              </span>
             </div>
-            <div className="space-y-4">
-              {NAMING_RIGHTS_DRAFT.items.map((item) => (
-                <div key={item.title} className="rounded-lg border border-border bg-background p-5">
-                  <p className="font-display text-base font-bold text-brand">{item.title}</p>
-                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.text}</p>
-                </div>
-              ))}
+            <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
+              <div>
+                <h3 className="text-display-md text-brand">Naming rights: legado com nome próprio</h3>
+                <p className="mt-6 text-base leading-relaxed text-muted-foreground lg:text-lg">
+                  {NAMING_RIGHTS_DRAFT.intro}
+                </p>
+                <p className="mt-6 rounded-2xl border-l-4 border-brand-teal bg-surface p-5 text-sm leading-relaxed text-foreground lg:text-base">
+                  {NAMING_RIGHTS_DRAFT.example}
+                </p>
+              </div>
+              <ul className="divide-y divide-border">
+                {NAMING_RIGHTS_DRAFT.items.map((item, i) => (
+                  <li key={item.title} className="group flex gap-5 py-6 first:pt-0 last:pb-0">
+                    <span className="text-outline shrink-0 text-3xl" aria-hidden="true">
+                      0{i + 1}
+                    </span>
+                    <div>
+                      <p className="font-display text-lg font-bold text-brand">{item.title}</p>
+                      <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.text}</p>
+                    </div>
+                  </li>
+                ))}
+              </ul>
             </div>
           </div>
         </Reveal>
 
-        <Reveal className="mt-6 flex flex-col items-start justify-between gap-6 rounded-xl border border-border bg-background p-8 lg:flex-row lg:items-center">
-          <div>
-            <h3 className="font-display text-2xl font-bold text-brand">
-              Existe um caminho para cada tipo de parceiro.
-            </h3>
-            <p className="mt-3 max-w-2xl text-sm leading-relaxed text-muted-foreground">
-              Descubra qual modelo se aplica ao seu perfil e quais dimensões de impacto fazem mais
-              sentido avaliar na sua região.
-            </p>
+        <Reveal variant="up" className="mt-8">
+          <div className="relative isolate overflow-hidden rounded-[2rem] bg-brand p-8 text-white lg:p-12">
+            <div className="aurora opacity-60" aria-hidden="true" />
+            <div className="relative flex flex-col items-start justify-between gap-8 lg:flex-row lg:items-center">
+              <div>
+                <h3 className="font-display text-3xl font-extrabold tracking-tight lg:text-4xl">
+                  Existe um caminho para cada tipo de parceiro.
+                </h3>
+                <p className="mt-4 max-w-2xl text-base leading-relaxed text-white/80">
+                  Descubra qual modelo se aplica ao seu perfil e quais dimensões de impacto fazem mais
+                  sentido avaliar na sua região.
+                </p>
+              </div>
+              <a
+                href="#simulador"
+                className="btn-shine group inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold text-brand"
+              >
+                Simular Meu Impacto
+                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+              </a>
+            </div>
           </div>
-          <a
-            href="#simulador"
-            className="shrink-0 rounded-md bg-brand px-6 py-4 text-sm font-bold text-brand-foreground transition-colors hover:bg-brand-deep"
-          >
-            Simular Meu Impacto
-          </a>
         </Reveal>
       </div>
     </section>

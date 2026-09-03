@@ -1,14 +1,7 @@
-import { useEffect, useRef, useState } from "react";
-import { ArrowRight, Sparkles, CalendarClock, Globe2 } from "lucide-react";
-import { Reveal, SCHEDULE_URL, SectionTag } from "./shared";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-  type CarouselApi,
-} from "@/components/ui/carousel";
+import { useEffect, useState, type CSSProperties } from "react";
+import { ArrowRight, Sparkles, CalendarClock, Globe2, ChevronDown } from "lucide-react";
+import { cn } from "@/lib/utils";
+import { BrandOrbit, Reveal, SCHEDULE_URL, SectionTag, WordReveal } from "./shared";
 
 const PROOFS = [
   { icon: CalendarClock, text: "40 anos de operação" },
@@ -28,143 +21,181 @@ const HERO_PHOTOS = [
   "/images/dci/hero-carousel-5.jpg",
 ];
 
-function HeroCarousel() {
-  const [api, setApi] = useState<CarouselApi>();
+const SLIDE_MS = 6000;
 
-  useEffect(() => {
-    if (!api) return;
-    const interval = setInterval(() => {
-      if (api.canScrollNext()) {
-        api.scrollNext();
-      } else {
-        api.scrollTo(0);
-      }
-    }, 4500);
-    return () => clearInterval(interval);
-  }, [api]);
-
+/**
+ * Fundo cinematográfico: fotos em tela cheia com crossfade + Ken Burns lento.
+ * Implementado manualmente (sem plugin) com state + CSS.
+ */
+function HeroBackdrop({ index }: { index: number }) {
   return (
-    <Carousel setApi={setApi} opts={{ loop: true }} className="group">
-      <CarouselContent>
-        {HERO_PHOTOS.map((src, i) => (
-          <CarouselItem key={src}>
-            <div className="overflow-hidden rounded-lg border border-brand-foreground/25 bg-brand/40">
-              <img
-                src={src}
-                alt="Público interagindo com experiências do Discovery Centre"
-                className="aspect-[5/4] w-full object-cover"
-                loading={i === 0 ? "eager" : "lazy"}
-              />
-            </div>
-          </CarouselItem>
-        ))}
-      </CarouselContent>
-      <CarouselPrevious className="left-3 border-brand-foreground/40 bg-brand-deep/60 text-brand-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-brand-deep" />
-      <CarouselNext className="right-3 border-brand-foreground/40 bg-brand-deep/60 text-brand-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-brand-deep" />
-    </Carousel>
+    <div className="absolute inset-0 overflow-hidden" aria-hidden="true">
+      {HERO_PHOTOS.map((src, i) => {
+        const isActive = i === index;
+        return (
+          <div
+            key={src}
+            className={cn(
+              "absolute inset-0 transition-opacity duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+              isActive ? "opacity-100" : "opacity-0",
+            )}
+          >
+            <img
+              src={src}
+              alt=""
+              className={cn("h-full w-full object-cover", isActive && "kenburns")}
+              loading={i === 0 ? "eager" : "lazy"}
+              fetchPriority={i === 0 ? "high" : "auto"}
+            />
+          </div>
+        );
+      })}
+      {/* Véus: profundidade + legibilidade do texto */}
+      <div className="absolute inset-0 bg-gradient-to-r from-brand-deep/95 via-brand-deep/70 to-brand-deep/30" />
+      <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/20 to-brand-deep/40" />
+      <div className="absolute inset-0 mix-blend-multiply" style={{ background: "var(--brand-deep)", opacity: 0.25 }} />
+    </div>
   );
 }
 
-/**
- * Parallax leve entre o gradiente de fundo e o carrossel, baseado no scroll.
- * Amplitude pequena (editorial refinado) e desativado com prefers-reduced-motion.
- */
-function useHeroParallax() {
-  const glowRef = useRef<HTMLDivElement>(null);
-  const carouselRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-    let frame = 0;
-    const onScroll = () => {
-      cancelAnimationFrame(frame);
-      frame = requestAnimationFrame(() => {
-        const y = window.scrollY;
-        if (glowRef.current) {
-          glowRef.current.style.transform = `translateY(${Math.min(y * 0.12, 60)}px)`;
-        }
-        if (carouselRef.current) {
-          carouselRef.current.style.transform = `translateY(${Math.min(y * -0.05, 24)}px)`;
-        }
-      });
-    };
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => {
-      window.removeEventListener("scroll", onScroll);
-      cancelAnimationFrame(frame);
-    };
-  }, []);
-
-  return { glowRef, carouselRef };
+function SlideDots({
+  index,
+  onSelect,
+}: {
+  index: number;
+  onSelect: (i: number) => void;
+}) {
+  return (
+    <div className="flex items-center gap-2" role="tablist" aria-label="Fotos em destaque">
+      {HERO_PHOTOS.map((src, i) => (
+        <button
+          key={src}
+          type="button"
+          role="tab"
+          aria-selected={i === index}
+          aria-label={`Foto ${i + 1}`}
+          onClick={() => onSelect(i)}
+          className={cn(
+            "relative h-1 overflow-hidden rounded-full bg-white/25 transition-all duration-500",
+            i === index ? "w-12" : "w-5 hover:bg-white/50",
+          )}
+        >
+          {i === index && (
+            <span
+              className="absolute inset-y-0 left-0 rounded-full bg-brand-light"
+              style={{ animation: `hero-progress ${SLIDE_MS}ms linear forwards` } as CSSProperties}
+            />
+          )}
+        </button>
+      ))}
+    </div>
+  );
 }
 
 export function Hero() {
-  const { glowRef, carouselRef } = useHeroParallax();
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % HERO_PHOTOS.length), SLIDE_MS);
+    return () => clearInterval(id);
+  }, [index]);
 
   return (
-    <section id="topo" className="relative overflow-hidden bg-brand-deep pt-28 text-brand-foreground">
-      <div
-        ref={glowRef}
-        className="pointer-events-none absolute inset-0 opacity-40"
-        style={{
-          backgroundImage:
-            "radial-gradient(60% 60% at 15% 10%, var(--brand-medium), transparent 70%), radial-gradient(50% 50% at 90% 25%, var(--brand-light), transparent 70%)",
-        }}
-        aria-hidden="true"
-      />
-      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 py-16 lg:grid-cols-[1.05fr_0.95fr] lg:px-8 lg:py-24">
-        <Reveal>
-          <SectionTag tone="light">Discovery Centre International no Brasil</SectionTag>
-          <h1 className="mt-6 font-display text-4xl font-bold leading-[1.08] sm:text-5xl lg:text-6xl">
-            Leve para a sua região um centro interativo de ciência
-          </h1>
-          <p className="mt-6 max-w-xl text-base leading-relaxed text-brand-foreground/80 sm:text-lg">
-            O Discovery Centre International traz ao Brasil uma estrutura desenvolvida a partir de 40
-            anos de operação no Canadá para orientar a criação de centros de ciência interativos, da
-            concepção à operação.
-          </p>
-          <div className="mt-9 flex flex-col gap-3 sm:flex-row">
+    <section
+      id="topo"
+      className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-brand-deep text-brand-foreground"
+    >
+      <HeroBackdrop index={index} />
+
+      {/* Grafismo orbital de marca */}
+      <BrandOrbit className="absolute -right-[12%] top-[8%] hidden w-[58vw] max-w-[820px] opacity-60 lg:block" />
+
+      {/* Linhas técnicas (blueprint) */}
+      <div className="grid-lines pointer-events-none absolute inset-0 text-white opacity-60" aria-hidden="true" />
+
+      <div className="relative mx-auto flex w-full max-w-7xl flex-1 flex-col justify-end px-5 pb-16 pt-36 lg:px-8 lg:pb-24 lg:pt-44">
+        <div className="max-w-4xl">
+          <Reveal variant="fade">
+            <SectionTag tone="light">Discovery Centre International no Brasil</SectionTag>
+          </Reveal>
+
+          <WordReveal
+            as="h1"
+            text="Leve para a sua região um centro interativo de ciência"
+            className="text-display mt-8 text-white drop-shadow-[0_8px_30px_rgba(0,0,0,0.35)]"
+            delay={150}
+            stagger={70}
+          />
+
+          <Reveal variant="blur" delay={700} className="mt-8 max-w-2xl">
+            <p className="text-base leading-relaxed text-white/85 sm:text-lg lg:text-xl">
+              O Discovery Centre International traz ao Brasil uma estrutura desenvolvida a partir de 40
+              anos de operação no Canadá para orientar a criação de centros de ciência interativos, da
+              concepção à operação.
+            </p>
+          </Reveal>
+
+          <Reveal variant="up" delay={900} className="mt-10 flex flex-col gap-3 sm:flex-row sm:items-center">
             <a
               href="#como-funciona"
-              className="inline-flex items-center justify-center rounded-md bg-brand-foreground px-6 py-4 text-sm font-bold text-brand transition-transform hover:-translate-y-0.5"
+              className="btn-shine inline-flex items-center justify-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold text-brand shadow-[0_20px_50px_-20px_rgba(255,255,255,0.6)]"
             >
               Conhecer o modelo DCI
             </a>
             <a
               href={SCHEDULE_URL}
-              className="inline-flex items-center justify-center gap-2 rounded-md border border-brand-foreground/40 px-6 py-4 text-sm font-bold text-brand-foreground transition-colors hover:bg-brand-foreground/10"
+              className="glass btn-shine group inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-sm font-bold text-white transition-colors hover:bg-white/15"
             >
-              Agendar uma Conversa <ArrowRight className="size-4" aria-hidden="true" />
+              Agendar uma Conversa{" "}
+              <ArrowRight
+                className="size-4 transition-transform group-hover:translate-x-1"
+                aria-hidden="true"
+              />
             </a>
-          </div>
-        </Reveal>
-
-        <Reveal delay={120}>
-          <div ref={carouselRef}>
-            <HeroCarousel />
-          </div>
-        </Reveal>
-      </div>
-
-      <div className="relative border-t border-brand-foreground/15 bg-brand/40">
-        <div className="mx-auto grid max-w-7xl gap-6 px-5 py-7 sm:grid-cols-3 lg:px-8">
-          {PROOFS.map(({ icon: Icon, text }) => (
-            <div key={text} className="flex items-center gap-3">
-              <Icon className="size-5 shrink-0 text-brand-light" aria-hidden="true" />
-              <span className="text-sm font-semibold">{text}</span>
-            </div>
-          ))}
+          </Reveal>
         </div>
+
+        {/* Rodapé do hero: provas + controle do slideshow */}
+        <Reveal variant="fade" delay={1200} className="mt-16 lg:mt-24">
+          <div className="flex flex-col gap-6 border-t border-white/15 pt-8 lg:flex-row lg:items-end lg:justify-between">
+            <ul className="flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:gap-3">
+              {PROOFS.map(({ icon: Icon, text }, i) => (
+                <li
+                  key={text}
+                  className="glass flex items-center gap-3 rounded-full py-2.5 pl-3 pr-5"
+                  style={{ animation: `fade-up 0.8s ${1300 + i * 120}ms both cubic-bezier(0.16,1,0.3,1)` }}
+                >
+                  <span className="flex size-8 items-center justify-center rounded-full bg-brand-light/20 text-brand-light">
+                    <Icon className="size-4" aria-hidden="true" />
+                  </span>
+                  <span className="text-sm font-semibold text-white">{text}</span>
+                </li>
+              ))}
+            </ul>
+            <SlideDots index={index} onSelect={setIndex} />
+          </div>
+        </Reveal>
       </div>
 
-      <div className="relative bg-brand-deep">
-        <p className="mx-auto max-w-7xl px-5 pb-10 pt-6 text-sm text-brand-foreground/75 lg:px-8">
-          Uma estrutura para quem quer{" "}
-          <strong className="font-semibold text-brand-foreground">
-            operar, viabilizar ou apoiar institucionalmente
-          </strong>{" "}
-          um centro de ciência em sua região.
-        </p>
+      {/* Faixa de fecho: frase de posicionamento + indicador de scroll */}
+      <div className="relative border-t border-white/10 bg-brand-deep/60 backdrop-blur-md">
+        <div className="mx-auto flex max-w-7xl items-center justify-between gap-6 px-5 py-5 lg:px-8">
+          <p className="max-w-3xl text-sm text-white/75 lg:text-base">
+            Uma estrutura para quem quer{" "}
+            <strong className="font-semibold text-white">
+              operar, viabilizar ou apoiar institucionalmente
+            </strong>{" "}
+            um centro de ciência em sua região.
+          </p>
+          <a
+            href="#quem-somos"
+            aria-label="Ir para a próxima seção"
+            className="hidden shrink-0 items-center gap-3 text-xs font-bold uppercase tracking-[0.2em] text-white/70 transition-colors hover:text-white md:inline-flex"
+          >
+            <span className="scroll-hint block h-10 w-px bg-white/15 text-brand-light" aria-hidden="true" />
+            <ChevronDown className="size-4 animate-bounce" aria-hidden="true" />
+          </a>
+        </div>
       </div>
     </section>
   );

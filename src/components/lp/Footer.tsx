@@ -52,14 +52,7 @@ export function Footer() {
           </div>
         </div>
 
-        {/* Wordmark de fecho */}
-        <div className="mt-16 select-none overflow-hidden" aria-hidden="true">
-          <p className="text-outline-light font-display text-[clamp(3rem,11vw,10.5rem)] font-extrabold leading-[0.85] tracking-tighter whitespace-nowrap opacity-60">
-            Discovery Centre
-          </p>
-        </div>
-
-        <div className="mt-10 flex flex-col gap-3 border-t border-brand-foreground/15 pt-6 text-xs text-brand-foreground/60 sm:flex-row sm:items-center sm:justify-between">
+        <div className="mt-14 flex flex-col gap-3 border-t border-brand-foreground/15 pt-6 text-xs text-brand-foreground/60 sm:flex-row sm:items-center sm:justify-between">
           <p>© {new Date().getFullYear()} Discovery Centre International. Todos os direitos reservados.</p>
           <div className="flex gap-5">
             <a href="#topo" className="transition-colors hover:text-brand-foreground">

@@ -25,7 +25,7 @@ function PhotoCollage() {
   const front = useParallax<HTMLDivElement>(-0.05);
 
   return (
-    <div className="relative mx-auto aspect-[4/5] w-full max-w-[520px] lg:mx-0">
+    <div className="relative mx-auto mb-8 aspect-[4/5] w-full max-w-[520px] lg:mx-0">
       <div className="dot-grid absolute -inset-10 text-brand" aria-hidden="true" />
 
       <div
@@ -71,52 +71,54 @@ function PhotoCollage() {
  */
 function SteamOrbit() {
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[380px]">
-      <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" aria-hidden="true" fill="none">
-        <circle cx="200" cy="200" r="186" stroke="var(--color-border)" strokeDasharray="3 8" className="spin-slow" />
-        <circle cx="200" cy="200" r="130" stroke="var(--color-border)" />
-        <circle cx="200" cy="200" r="130" stroke="url(#steam-arc)" strokeWidth="2" strokeDasharray="220 600" strokeLinecap="round" className="spin-slow-reverse" />
-        <defs>
-          <linearGradient id="steam-arc" x1="0" x2="1">
-            <stop offset="0" stopColor="var(--brand-light)" />
-            <stop offset="1" stopColor="var(--brand-teal)" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <div className="glow-brand rounded-full bg-brand px-8 py-4 font-display text-xl font-extrabold tracking-[0.25em] text-brand-foreground sm:text-2xl">
-          STEAM
-        </div>
-      </div>
-
-      {STEAM.map(({ icon: Icon, label }, i) => {
-        const angle = -90 + i * 90;
-        const rad = (angle * Math.PI) / 180;
-        const r = 46.5;
-        const x = 50 + r * Math.cos(rad);
-        const y = 50 + r * Math.sin(rad);
-        return (
-          <div
-            key={label}
-            className="absolute -translate-x-1/2 -translate-y-1/2"
-            style={{ left: `${x}%`, top: `${y}%` }}
-          >
-            <div
-              className={cn(
-                "card-premium flex flex-col items-center gap-1.5 rounded-2xl px-4 py-3 text-center shadow-lg",
-                "float-slow",
-              )}
-              style={{ animationDelay: `${i * 0.9}s` }}
-            >
-              <Icon className="size-5 text-brand-medium" aria-hidden="true" />
-              <span className="font-display text-[0.7rem] font-bold uppercase tracking-wider text-brand">
-                {label}
-              </span>
-            </div>
+    <div className="mx-auto w-full max-w-[380px] px-6 py-10 sm:px-8 sm:py-12">
+      <div className="relative aspect-square w-full">
+        <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" aria-hidden="true" fill="none">
+          <circle cx="200" cy="200" r="186" stroke="var(--color-border)" strokeDasharray="3 8" className="spin-slow" />
+          <circle cx="200" cy="200" r="130" stroke="var(--color-border)" />
+          <circle cx="200" cy="200" r="130" stroke="url(#steam-arc)" strokeWidth="2" strokeDasharray="220 600" strokeLinecap="round" className="spin-slow-reverse" />
+          <defs>
+            <linearGradient id="steam-arc" x1="0" x2="1">
+              <stop offset="0" stopColor="var(--brand-light)" />
+              <stop offset="1" stopColor="var(--brand-teal)" />
+            </linearGradient>
+          </defs>
+        </svg>
+  
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <div className="glow-brand rounded-full bg-brand px-8 py-4 font-display text-xl font-extrabold tracking-[0.25em] text-brand-foreground sm:text-2xl">
+            STEAM
           </div>
-        );
-      })}
+        </div>
+  
+        {STEAM.map(({ icon: Icon, label }, i) => {
+          const angle = -90 + i * 90;
+          const rad = (angle * Math.PI) / 180;
+          const r = 46.5;
+          const x = 50 + r * Math.cos(rad);
+          const y = 50 + r * Math.sin(rad);
+          return (
+            <div
+              key={label}
+              className="absolute -translate-x-1/2 -translate-y-1/2"
+              style={{ left: `${x}%`, top: `${y}%` }}
+            >
+              <div
+                className={cn(
+                  "card-premium flex flex-col items-center gap-1.5 rounded-2xl px-4 py-3 text-center shadow-lg",
+                  "float-slow",
+                )}
+                style={{ animationDelay: `${i * 0.9}s` }}
+              >
+                <Icon className="size-5 text-brand-medium" aria-hidden="true" />
+                <span className="font-display text-[0.7rem] font-bold uppercase tracking-wider text-brand">
+                  {label}
+                </span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 }

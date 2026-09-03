@@ -197,10 +197,15 @@
     clip-path: inset(0 100% 0 0);
   }
 
+  /* Sem clip-path no estado visível: um inset(0) recortaria sombras, rings
+     e filhos posicionados fora da caixa (cards flutuantes, fotos sobrepostas). */
   &[data-visible="true"] {
     opacity: 1;
     transform: none;
     filter: none;
+    clip-path: none;
+  }
+  &[data-variant="wipe"][data-visible="true"] {
     clip-path: inset(0 0 0 0);
   }
 

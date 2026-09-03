@@ -232,7 +232,7 @@ export function History() {
             </Reveal>
           </div>
 
-          <Reveal variant="right" delay={200} className="relative">
+          <Reveal variant="right" delay={200} className="relative mb-10 sm:ml-10 lg:ml-0">
             <div className="photo-premium relative shadow-2xl">
               <img
                 src="/images/dci/history-sede-2017.jpg"
@@ -242,7 +242,7 @@ export function History() {
               />
             </div>
             {/* Estatística flutuando sobre a foto */}
-            <div className="glass-light absolute -bottom-8 -left-4 max-w-[260px] rounded-2xl p-6 shadow-xl sm:-left-10">
+            <div className="glass-light absolute -bottom-8 left-4 max-w-[260px] rounded-2xl p-6 shadow-xl sm:-left-10">
               <p className="text-gradient-deep font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
                 ≈ <Counter value={2} suffix=" milhões" />
               </p>

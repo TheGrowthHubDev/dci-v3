@@ -361,41 +361,6 @@ export function Marquee({ children, className }: { children: ReactNode; classNam
 }
 
 /**
- * Divisor SVG sutil entre seções de cores diferentes (costura visual).
- * `flip` inverte a curva horizontalmente para variar o ritmo entre seções.
- */
-export function SectionDivider({
-  fromColor,
-  toColor,
-  flip = false,
-  className,
-}: {
-  fromColor: string;
-  toColor: string;
-  flip?: boolean;
-  className?: string;
-}) {
-  return (
-    <div
-      className={cn("relative h-10 w-full overflow-hidden lg:h-16", className)}
-      style={{ backgroundColor: fromColor }}
-      aria-hidden="true"
-    >
-      <svg
-        viewBox="0 0 1440 80"
-        preserveAspectRatio="none"
-        className={cn("absolute inset-0 h-full w-full", flip && "-scale-x-100")}
-      >
-        <path
-          d="M0,32 C240,72 480,0 720,24 C960,48 1200,8 1440,40 L1440,80 L0,80 Z"
-          fill={toColor}
-        />
-      </svg>
-    </div>
-  );
-}
-
-/**
  * Hook de micro-interação: leve tilt 3D + escala ao mover o mouse sobre o card.
  * Amplitude intencionalmente sutil (editorial refinado, não "gamer").
  */

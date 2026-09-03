@@ -1,5 +1,31 @@
-import { Award, Building2, Landmark, Users } from "lucide-react";
+import { Award, Building2, Landmark, PencilLine, Users } from "lucide-react";
 import { Reveal, SectionTag } from "./shared";
+
+/**
+ * RASCUNHO — sub-bloco de naming rights.
+ * Texto provisório enquanto a Isadora redige a versão definitiva (conforme call).
+ * Fácil de localizar/substituir: procurar por "NAMING_RIGHTS_DRAFT".
+ */
+const NAMING_RIGHTS_DRAFT = {
+  intro:
+    "O investidor âncora não viabiliza o projeto sozinho: parte relevante do CAPEX costuma vir de patrocínios e parcerias associadas a espaços e experiências específicas do centro.",
+  example:
+    "Exemplo de referência: uma galeria de aviação pode ser viabilizada em parceria com uma fabricante aeronáutica, que cede uma aeronave para exposição em troca de associação de marca ao espaço.",
+  items: [
+    {
+      title: "Empresas",
+      text: "Associação de marca a um espaço, galeria ou ao centro como um todo — do mesmo tipo de movimento visto em grandes ativos esportivos e culturais.",
+    },
+    {
+      title: "Famílias filantropas",
+      text: "Legado nomeado ligado a uma causa ou área de interesse da família, associando o nome a um impacto educacional permanente.",
+    },
+    {
+      title: "Parcerias de operação",
+      text: "Possibilidade de parceria para operação dos primeiros anos do centro, reduzindo o risco percebido do período de implantação.",
+    },
+  ],
+};
 
 const CARDS = [
   {
@@ -106,7 +132,38 @@ export function Audience() {
           ))}
         </div>
 
-        <Reveal className="mt-12 flex flex-col items-start justify-between gap-6 rounded-xl border border-border bg-background p-8 lg:flex-row lg:items-center">
+        {/* RASCUNHO — Naming rights (texto provisório, aguardando redação final da Isadora) */}
+        <Reveal className="mt-12 rounded-xl border-2 border-dashed border-brand-medium/50 bg-surface p-6 lg:p-10">
+          <div className="mb-6 flex flex-wrap items-center gap-2">
+            <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-medium/15 px-3 py-1 text-xs font-bold uppercase tracking-widest text-brand-medium">
+              <PencilLine className="size-3.5" aria-hidden="true" />
+              Rascunho — texto provisório
+            </span>
+          </div>
+          <div className="grid gap-8 lg:grid-cols-[1.1fr_0.9fr]">
+            <div>
+              <h3 className="font-display text-2xl font-bold text-brand">
+                Naming rights: legado com nome próprio
+              </h3>
+              <p className="mt-4 text-base leading-relaxed text-muted-foreground">
+                {NAMING_RIGHTS_DRAFT.intro}
+              </p>
+              <p className="mt-4 rounded-lg border-l-4 border-brand-teal bg-background p-4 text-sm leading-relaxed text-foreground">
+                {NAMING_RIGHTS_DRAFT.example}
+              </p>
+            </div>
+            <div className="space-y-4">
+              {NAMING_RIGHTS_DRAFT.items.map((item) => (
+                <div key={item.title} className="rounded-lg border border-border bg-background p-5">
+                  <p className="font-display text-base font-bold text-brand">{item.title}</p>
+                  <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.text}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </Reveal>
+
+        <Reveal className="mt-6 flex flex-col items-start justify-between gap-6 rounded-xl border border-border bg-background p-8 lg:flex-row lg:items-center">
           <div>
             <h3 className="font-display text-2xl font-bold text-brand">
               Existe um caminho para cada tipo de parceiro.

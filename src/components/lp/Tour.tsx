@@ -1,5 +1,5 @@
 import { Expand } from "lucide-react";
-import { ImagePlaceholder, Reveal, SectionTag, TOUR_URL } from "./shared";
+import { Reveal, SectionTag, TOUR_EMBED_URL, TOUR_URL } from "./shared";
 
 export function Tour() {
   return (
@@ -26,11 +26,16 @@ export function Tour() {
         </Reveal>
 
         <Reveal delay={120}>
-          <ImagePlaceholder
-            label="Prévia do tour 3D das galerias em Halifax"
-            ratio="aspect-video"
-            className="border-brand-foreground/25 bg-brand-deep text-brand-foreground"
-          />
+          <div className="aspect-video overflow-hidden rounded-lg border border-brand-foreground/25 bg-brand-deep">
+            <iframe
+              src={TOUR_EMBED_URL}
+              title="Tour virtual 3D do Discovery Centre em Halifax"
+              className="h-full w-full"
+              allow="xr-spatial-tracking; gyroscope; accelerometer"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
         </Reveal>
       </div>
     </section>

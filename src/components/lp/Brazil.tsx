@@ -1,5 +1,5 @@
 import { ArrowRight } from "lucide-react";
-import { ImagePlaceholder, Reveal, SCHEDULE_URL, SectionTag } from "./shared";
+import { Reveal, SCHEDULE_URL, SectionTag } from "./shared";
 
 export function Brazil() {
   return (
@@ -31,10 +31,11 @@ export function Brazil() {
         </Reveal>
 
         <Reveal delay={120}>
-          <ImagePlaceholder
-            label="Contexto brasileiro / encontro institucional"
-            ratio="aspect-[4/3]"
-            className="bg-background"
+          <img
+            src="/images/dci/brazil-contexto-institucional.jpg"
+            alt="Apresentação institucional em evento do Discovery Centre"
+            className="aspect-[4/3] w-full rounded-lg object-cover"
+            loading="lazy"
           />
         </Reveal>
       </div>

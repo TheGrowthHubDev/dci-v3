@@ -98,10 +98,11 @@ export function Differentiators() {
               ))}
             </ul>
           </div>
-          <ImagePlaceholder
-            label="Fotografia ampla da sede em Halifax"
-            ratio="aspect-[16/10]"
-            className="border-brand-foreground/25 bg-brand-deep text-brand-foreground"
+          <img
+            src="/images/dci/differentiators-halifax.jpg"
+            alt="Sede do Discovery Centre em Halifax, Canadá"
+            className="aspect-[16/10] w-full rounded-lg border border-brand-foreground/25 object-cover"
+            loading="lazy"
           />
         </Reveal>
 

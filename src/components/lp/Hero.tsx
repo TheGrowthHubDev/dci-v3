@@ -1,11 +1,69 @@
+import { useEffect, useState } from "react";
 import { ArrowRight, Sparkles, CalendarClock, Globe2 } from "lucide-react";
-import { ImagePlaceholder, Reveal, SCHEDULE_URL, SectionTag } from "./shared";
+import { Reveal, SCHEDULE_URL, SectionTag } from "./shared";
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  CarouselNext,
+  CarouselPrevious,
+  type CarouselApi,
+} from "@/components/ui/carousel";
 
 const PROOFS = [
   { icon: CalendarClock, text: "40 anos de operação" },
   { icon: Sparkles, text: "Educação STEAM baseada em experiência" },
   { icon: Globe2, text: "DCI criado em 2021 para expansão internacional" },
 ];
+
+/**
+ * Fotos do Discovery Centre em Halifax (Canadá), centro de referência do modelo DCI.
+ * Serão substituídas por fotos do centro brasileiro assim que estiverem disponíveis.
+ */
+const HERO_PHOTOS = [
+  "/images/dci/hero-carousel-1.jpg",
+  "/images/dci/hero-carousel-2.jpg",
+  "/images/dci/hero-carousel-3.jpg",
+  "/images/dci/hero-carousel-4.jpg",
+  "/images/dci/hero-carousel-5.jpg",
+];
+
+function HeroCarousel() {
+  const [api, setApi] = useState<CarouselApi>();
+
+  useEffect(() => {
+    if (!api) return;
+    const interval = setInterval(() => {
+      if (api.canScrollNext()) {
+        api.scrollNext();
+      } else {
+        api.scrollTo(0);
+      }
+    }, 4500);
+    return () => clearInterval(interval);
+  }, [api]);
+
+  return (
+    <Carousel setApi={setApi} opts={{ loop: true }} className="group">
+      <CarouselContent>
+        {HERO_PHOTOS.map((src, i) => (
+          <CarouselItem key={src}>
+            <div className="overflow-hidden rounded-lg border border-brand-foreground/25 bg-brand/40">
+              <img
+                src={src}
+                alt="Público interagindo com experiências do Discovery Centre"
+                className="aspect-[5/4] w-full object-cover"
+                loading={i === 0 ? "eager" : "lazy"}
+              />
+            </div>
+          </CarouselItem>
+        ))}
+      </CarouselContent>
+      <CarouselPrevious className="left-3 border-brand-foreground/40 bg-brand-deep/60 text-brand-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-brand-deep" />
+      <CarouselNext className="right-3 border-brand-foreground/40 bg-brand-deep/60 text-brand-foreground opacity-0 transition-opacity group-hover:opacity-100 hover:bg-brand-deep" />
+    </Carousel>
+  );
+}
 
 export function Hero() {
   return (
@@ -46,11 +104,7 @@ export function Hero() {
         </Reveal>
 
         <Reveal delay={120}>
-          <ImagePlaceholder
-            label="Foto ampla do Discovery Centre em Halifax, público interagindo"
-            ratio="aspect-[5/4]"
-            className="border-brand-foreground/25 bg-brand/40 text-brand-foreground"
-          />
+          <HeroCarousel />
         </Reveal>
       </div>
 

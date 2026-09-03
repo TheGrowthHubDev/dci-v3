@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ChevronDown, Building2, GraduationCap, Settings2, HandCoins } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { ImagePlaceholder, Reveal, SectionTag } from "./shared";
+import { Reveal, SectionTag } from "./shared";
 
 const STEPS = [
   {
@@ -147,10 +147,11 @@ export function Model() {
               </span>
             </div>
           </div>
-          <ImagePlaceholder
-            label="Centro adaptado ao contexto local"
-            ratio="aspect-[16/10]"
-            className="h-full"
+          <img
+            src="/images/dci/model-adaptacao-local.jpg"
+            alt="Apresentação institucional de uma experiência interativa do centro"
+            className="h-full min-h-[240px] w-full rounded-xl object-cover"
+            loading="lazy"
           />
         </Reveal>
 

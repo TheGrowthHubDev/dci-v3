@@ -1,5 +1,5 @@
 import { Hand, FlaskConical, Hammer, Lightbulb } from "lucide-react";
-import { ImagePlaceholder, Reveal, SectionTag } from "./shared";
+import { Reveal, SectionTag } from "./shared";
 
 const STEAM = [
   { icon: Hand, label: "Tocar" },
@@ -86,8 +86,18 @@ export function WhatIs() {
             </p>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <ImagePlaceholder label="Escolas em visita ao centro" ratio="aspect-[4/3]" />
-              <ImagePlaceholder label="Jovens e famílias em experiência interativa" ratio="aspect-[4/3]" />
+              <img
+                src="/images/dci/whatis-escolas.jpg"
+                alt="Escolas em visita a um centro de ciência interativo"
+                className="aspect-[4/3] w-full rounded-lg object-cover"
+                loading="lazy"
+              />
+              <img
+                src="/images/dci/whatis-familias.jpg"
+                alt="Jovens e famílias em experiência interativa"
+                className="aspect-[4/3] w-full rounded-lg object-cover"
+                loading="lazy"
+              />
             </div>
           </Reveal>
         </div>

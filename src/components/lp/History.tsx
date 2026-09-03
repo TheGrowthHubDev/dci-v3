@@ -109,10 +109,11 @@ export function History() {
               de visitantes recebidos ao longo da trajetória do Discovery Centre.
             </p>
           </div>
-          <ImagePlaceholder
-            label="Fotografias históricas e atuais do Discovery Centre"
-            ratio="aspect-[16/9]"
-            className="bg-background"
+          <img
+            src="/images/dci/history-galeria-atual.jpg"
+            alt="Uma das galerias do Discovery Centre em operação"
+            className="aspect-[16/9] w-full rounded-lg object-cover"
+            loading="lazy"
           />
         </Reveal>
 

@@ -7,7 +7,9 @@ import { cn } from "@/lib/utils";
  * Substituir pelos links oficiais quando disponíveis.
  */
 export const SCHEDULE_URL = "mailto:info@dcinternational.ca?subject=Agendar%20uma%20Conversa";
-export const TOUR_URL = "https://thediscoverycentre.ca/";
+export const TOUR_URL =
+  "https://my.matterport.com/models/3pmrByNdcc4?cta_origin=all_spaces_page&section=media";
+export const TOUR_EMBED_URL = "https://my.matterport.com/show/?m=3pmrByNdcc4";
 export const CONTACT_EMAIL = "info@dcinternational.ca";
 export const ADDRESS = "1215 Lower Water Street, Halifax, Nova Scotia, Canadá";
 

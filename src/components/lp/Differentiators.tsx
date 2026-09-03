@@ -66,6 +66,7 @@ const SUPPORT_LOGOS = [
   { name: "Saint Mary's University", src: "/images/dci/logos/saint-marys-university.svg" },
   { name: "Medavie", src: "/images/dci/logos/medavie.svg" },
   { name: "RBC", src: "/images/dci/logos/rbc.svg" },
+  { name: "Grupo Cataratas", src: "/images/dci/logos/grupo-cataratas.jpg" },
 ];
 
 export function Differentiators() {

@@ -47,12 +47,25 @@ const PROJECTS = [
 ];
 
 const PARTNERS = [
-  { name: "Dalhousie University", text: "Parceria acadêmica ligada ao Beaty Centre for Marine Biodiversity." },
+  {
+    name: "Dalhousie University",
+    text: "Parceria acadêmica ligada ao Beaty Centre for Marine Biodiversity.",
+    logo: "/images/dci/logos/dalhousie.svg",
+  },
   { name: "Maple Bear Global Schools", text: "Parceria pedagógica em educação." },
   {
     name: "Governo do Canadá",
     text: "Sinal institucional de um ecossistema construído com participação pública, privada e comunitária ao longo da história do Discovery Centre.",
   },
+];
+
+const SUPPORT_LOGOS = [
+  { name: "Research Nova Scotia", src: "/images/dci/logos/research-nova-scotia.png" },
+  { name: "IMP Aerospace & Defence", src: "/images/dci/logos/imp-aerospace-defence.png" },
+  { name: "Nova Scotia Power", src: "/images/dci/logos/nova-scotia-power.png" },
+  { name: "Saint Mary's University", src: "/images/dci/logos/saint-marys-university.svg" },
+  { name: "Medavie", src: "/images/dci/logos/medavie.svg" },
+  { name: "RBC", src: "/images/dci/logos/rbc.svg" },
 ];
 
 export function Differentiators() {
@@ -141,13 +154,46 @@ export function Differentiators() {
             {PARTNERS.map((p, i) => (
               <Reveal key={p.name} delay={i * 80}>
                 <article className="flex h-full flex-col rounded-xl border border-border p-6">
-                  <ImagePlaceholder label={`Logo ${p.name}`} ratio="aspect-[5/2]" className="mb-4" />
+                  {p.logo ? (
+                    <div className="mb-4 flex aspect-[5/2] items-center justify-center rounded-lg border border-border bg-background p-4">
+                      <img
+                        src={p.logo}
+                        alt={`Logo ${p.name}`}
+                        className="max-h-full max-w-full object-contain"
+                        loading="lazy"
+                      />
+                    </div>
+                  ) : (
+                    <ImagePlaceholder label={`Logo ${p.name}`} ratio="aspect-[5/2]" className="mb-4" />
+                  )}
                   <p className="font-display text-base font-bold text-brand">{p.name}</p>
                   <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{p.text}</p>
                 </article>
               </Reveal>
             ))}
           </div>
+        </div>
+
+        {/* Faixa de apoiadores */}
+        <div className="mt-16">
+          <Reveal>
+            <h3 className="font-display text-2xl font-bold text-brand">Ecossistema de apoio em Halifax</h3>
+          </Reveal>
+          <Reveal delay={60}>
+            <div className="mt-6 grid grid-cols-2 gap-6 rounded-xl border border-border bg-surface p-8 sm:grid-cols-3 lg:grid-cols-6">
+              {SUPPORT_LOGOS.map((l) => (
+                <div key={l.name} className="flex items-center justify-center">
+                  <img
+                    src={l.src}
+                    alt={l.name}
+                    title={l.name}
+                    className="max-h-10 w-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                    loading="lazy"
+                  />
+                </div>
+              ))}
+            </div>
+          </Reveal>
         </div>
       </div>
     </section>

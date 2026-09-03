@@ -81,6 +81,155 @@ export function SectionTag({ children, tone = "brand" }: { children: ReactNode; 
   );
 }
 
+/**
+ * Contador animado: dispara quando entra em viewport, anima de 0 até `value`.
+ * `prefix`/`suffix` preservam texto ao redor do número sem alterar o conteúdo final.
+ */
+export function Counter({
+  value,
+  prefix = "",
+  suffix = "",
+  duration = 1400,
+  className,
+}: {
+  value: number;
+  prefix?: string;
+  suffix?: string;
+  duration?: number;
+  className?: string;
+}) {
+  const ref = useRef<HTMLSpanElement>(null);
+  const [display, setDisplay] = useState(0);
+  const started = useRef(false);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion) {
+      setDisplay(value);
+      return;
+    }
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (entry?.isIntersecting && !started.current) {
+          started.current = true;
+          const start = performance.now();
+          const tick = (now: number) => {
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            setDisplay(Math.round(eased * value));
+            if (progress < 1) requestAnimationFrame(tick);
+          };
+          requestAnimationFrame(tick);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.4 },
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, [value, duration]);
+
+  return (
+    <span ref={ref} className={className}>
+      {prefix}
+      {display.toLocaleString("pt-BR")}
+      {suffix}
+    </span>
+  );
+}
+
+/**
+ * Faixa com rolagem infinita (marquee), duplicando os itens para loop contínuo.
+ * Pausa no hover; desativada automaticamente com prefers-reduced-motion.
+ */
+export function Marquee({ children, className }: { children: ReactNode; className?: string }) {
+  return (
+    <div className={cn("overflow-hidden", className)}>
+      <div className="marquee-track gap-12">
+        <div className="flex shrink-0 items-center gap-12">{children}</div>
+        <div className="flex shrink-0 items-center gap-12" aria-hidden="true">
+          {children}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+/**
+ * Divisor SVG sutil entre seções de cores diferentes (costura visual).
+ * `flip` inverte a curva horizontalmente para variar o ritmo entre seções.
+ */
+export function SectionDivider({
+  fromColor,
+  toColor,
+  flip = false,
+  className,
+}: {
+  fromColor: string;
+  toColor: string;
+  flip?: boolean;
+  className?: string;
+}) {
+  return (
+    <div
+      className={cn("relative h-10 w-full overflow-hidden lg:h-16", className)}
+      style={{ backgroundColor: fromColor }}
+      aria-hidden="true"
+    >
+      <svg
+        viewBox="0 0 1440 80"
+        preserveAspectRatio="none"
+        className={cn("absolute inset-0 h-full w-full", flip && "-scale-x-100")}
+      >
+        <path
+          d="M0,32 C240,72 480,0 720,24 C960,48 1200,8 1440,40 L1440,80 L0,80 Z"
+          fill={toColor}
+        />
+      </svg>
+    </div>
+  );
+}
+
+/**
+ * Hook de micro-interação: leve tilt 3D + escala ao mover o mouse sobre o card.
+ * Amplitude intencionalmente sutil (editorial refinado, não "gamer").
+ */
+export function useTilt(maxTilt = 4) {
+  const ref = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    if (window.matchMedia("(pointer: coarse)").matches) return;
+
+    function onMove(e: MouseEvent) {
+      const rect = el!.getBoundingClientRect();
+      const px = (e.clientX - rect.left) / rect.width;
+      const py = (e.clientY - rect.top) / rect.height;
+      const tiltY = (px - 0.5) * maxTilt * 2;
+      const tiltX = (0.5 - py) * maxTilt * 2;
+      el!.style.setProperty("--tilt-x", `${tiltX}deg`);
+      el!.style.setProperty("--tilt-y", `${tiltY}deg`);
+    }
+    function onLeave() {
+      el!.style.setProperty("--tilt-x", "0deg");
+      el!.style.setProperty("--tilt-y", "0deg");
+    }
+
+    el.addEventListener("mousemove", onMove);
+    el.addEventListener("mouseleave", onLeave);
+    return () => {
+      el.removeEventListener("mousemove", onMove);
+      el.removeEventListener("mouseleave", onLeave);
+    };
+  }, [maxTilt]);
+
+  return ref;
+}
+
 export function ImagePlaceholder({
   label,
   className,

@@ -147,12 +147,14 @@ export function Model() {
               </span>
             </div>
           </div>
-          <img
-            src="/images/dci/model-adaptacao-local.jpg"
-            alt="Apresentação institucional de uma experiência interativa do centro"
-            className="h-full min-h-[240px] w-full rounded-xl object-cover"
-            loading="lazy"
-          />
+          <div className="photo-frame h-full min-h-[240px] rounded-xl">
+            <img
+              src="/images/dci/model-adaptacao-local.jpg"
+              alt="Apresentação institucional de uma experiência interativa do centro"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
         </Reveal>
 
         {/* Capital Campaign Module */}

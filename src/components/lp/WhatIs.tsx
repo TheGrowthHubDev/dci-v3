@@ -86,18 +86,22 @@ export function WhatIs() {
             </p>
 
             <div className="grid gap-4 sm:grid-cols-2">
-              <img
-                src="/images/dci/whatis-escolas.jpg"
-                alt="Escolas em visita a um centro de ciência interativo"
-                className="aspect-[4/3] w-full rounded-lg object-cover"
-                loading="lazy"
-              />
-              <img
-                src="/images/dci/whatis-familias.jpg"
-                alt="Jovens e famílias em experiência interativa"
-                className="aspect-[4/3] w-full rounded-lg object-cover"
-                loading="lazy"
-              />
+              <div className="photo-frame aspect-[4/3] rounded-lg">
+                <img
+                  src="/images/dci/whatis-escolas.jpg"
+                  alt="Escolas em visita a um centro de ciência interativo"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
+              <div className="photo-frame aspect-[4/3] rounded-lg">
+                <img
+                  src="/images/dci/whatis-familias.jpg"
+                  alt="Jovens e famílias em experiência interativa"
+                  className="h-full w-full object-cover"
+                  loading="lazy"
+                />
+              </div>
             </div>
           </Reveal>
         </div>

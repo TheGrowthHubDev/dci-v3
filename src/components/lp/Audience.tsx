@@ -1,5 +1,15 @@
-import { Award, Building2, Landmark, PencilLine, Users } from "lucide-react";
-import { Reveal, SectionTag } from "./shared";
+import { Award, Building2, Landmark, PencilLine, Users, type LucideIcon } from "lucide-react";
+import { Reveal, SectionTag, useTilt } from "./shared";
+
+type AudienceCardData = {
+  icon: LucideIcon;
+  title: string;
+  lead: string;
+  bullets: string[];
+  closing?: string;
+  highlight?: { title: string; text: string };
+  proof?: string;
+};
 
 /**
  * RASCUNHO — sub-bloco de naming rights.
@@ -27,7 +37,7 @@ const NAMING_RIGHTS_DRAFT = {
   ],
 };
 
-const CARDS = [
+const CARDS: AudienceCardData[] = [
   {
     icon: Building2,
     title: "Para quem opera",
@@ -72,6 +82,43 @@ const CARDS = [
   },
 ];
 
+function AudienceCard({ icon: Icon, title, lead, bullets, closing, highlight, proof }: AudienceCardData) {
+  const tiltRef = useTilt(3);
+  return (
+    <article
+      ref={tiltRef}
+      className="tilt-card flex h-full flex-col rounded-xl border border-border bg-background p-7 hover:shadow-lg"
+    >
+      <Icon className="size-8 text-brand-medium" aria-hidden="true" />
+      <h3 className="mt-5 font-display text-xl font-bold text-brand">{title}</h3>
+      <p className="mt-3 text-sm leading-relaxed text-foreground">{lead}</p>
+      <ul className="mt-5 space-y-3">
+        {bullets.map((b) => (
+          <li key={b} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
+            <span className="mt-2 size-1.5 shrink-0 rounded-full bg-brand-light" aria-hidden="true" />
+            {b}
+          </li>
+        ))}
+      </ul>
+      {highlight && (
+        <div className="mt-6 rounded-lg bg-brand p-5 text-brand-foreground">
+          <Award className="size-6 text-brand-light" aria-hidden="true" />
+          <p className="mt-3 font-display text-base font-bold">{highlight.title}</p>
+          <p className="mt-2 text-sm leading-relaxed text-brand-foreground/80">{highlight.text}</p>
+        </div>
+      )}
+      {closing && (
+        <p className="mt-6 border-t border-border pt-5 text-sm font-semibold text-brand">{closing}</p>
+      )}
+      {proof && (
+        <p className="mt-6 rounded-lg border-l-4 border-brand-teal bg-surface p-4 text-sm leading-relaxed text-foreground">
+          {proof}
+        </p>
+      )}
+    </article>
+  );
+}
+
 export function Audience() {
   return (
     <section id="para-quem-e" className="bg-surface py-20 lg:py-28">
@@ -91,43 +138,9 @@ export function Audience() {
         </Reveal>
 
         <div className="mt-14 grid gap-6 lg:grid-cols-3">
-          {CARDS.map(({ icon: Icon, title, lead, bullets, closing, highlight, proof }, i) => (
-            <Reveal key={title} delay={i * 90}>
-              <article className="flex h-full flex-col rounded-xl border border-border bg-background p-7">
-                <Icon className="size-8 text-brand-medium" aria-hidden="true" />
-                <h3 className="mt-5 font-display text-xl font-bold text-brand">{title}</h3>
-                <p className="mt-3 text-sm leading-relaxed text-foreground">{lead}</p>
-                <ul className="mt-5 space-y-3">
-                  {bullets.map((b) => (
-                    <li key={b} className="flex gap-3 text-sm leading-relaxed text-muted-foreground">
-                      <span
-                        className="mt-2 size-1.5 shrink-0 rounded-full bg-brand-light"
-                        aria-hidden="true"
-                      />
-                      {b}
-                    </li>
-                  ))}
-                </ul>
-                {highlight && (
-                  <div className="mt-6 rounded-lg bg-brand p-5 text-brand-foreground">
-                    <Award className="size-6 text-brand-light" aria-hidden="true" />
-                    <p className="mt-3 font-display text-base font-bold">{highlight.title}</p>
-                    <p className="mt-2 text-sm leading-relaxed text-brand-foreground/80">
-                      {highlight.text}
-                    </p>
-                  </div>
-                )}
-                {closing && (
-                  <p className="mt-6 border-t border-border pt-5 text-sm font-semibold text-brand">
-                    {closing}
-                  </p>
-                )}
-                {proof && (
-                  <p className="mt-6 rounded-lg border-l-4 border-brand-teal bg-surface p-4 text-sm leading-relaxed text-foreground">
-                    {proof}
-                  </p>
-                )}
-              </article>
+          {CARDS.map((card, i) => (
+            <Reveal key={card.title} delay={i * 90}>
+              <AudienceCard {...card} />
             </Reveal>
           ))}
         </div>

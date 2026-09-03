@@ -115,6 +115,7 @@ function RootShell({ children }: { children: ReactNode }) {
       </head>
       <body>
         {children}
+        <div className="grain-overlay" aria-hidden="true" />
         <Scripts />
       </body>
     </html>

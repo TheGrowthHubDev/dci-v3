@@ -1,5 +1,7 @@
+import { useEffect, useRef, useState } from "react";
 import { Mail } from "lucide-react";
-import { CONTACT_EMAIL, ImagePlaceholder, Reveal, SectionTag } from "./shared";
+import { cn } from "@/lib/utils";
+import { CONTACT_EMAIL, Counter, ImagePlaceholder, Reveal, SectionTag } from "./shared";
 import {
   Carousel,
   CarouselContent,
@@ -60,6 +62,70 @@ const LEADERS = [
   },
 ];
 
+function Timeline() {
+  const itemRefs = useRef<Array<HTMLLIElement | null>>([]);
+  const [activeIndex, setActiveIndex] = useState(0);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const index = Number((entry.target as HTMLElement).dataset.index);
+            setActiveIndex((prev) => Math.max(prev, index));
+          }
+        });
+      },
+      { rootMargin: "-40% 0px -40% 0px", threshold: 0 },
+    );
+    itemRefs.current.forEach((el) => el && observer.observe(el));
+    return () => observer.disconnect();
+  }, []);
+
+  return (
+    <ol className="relative grid gap-8 border-l border-border pl-6 lg:grid-cols-6 lg:gap-6 lg:border-l-0 lg:border-t lg:pl-0 lg:pt-10">
+      {TIMELINE.map((item, i) => {
+        const passed = i <= activeIndex;
+        return (
+          <li
+            key={item.year}
+            ref={(el) => {
+              itemRefs.current[i] = el;
+            }}
+            data-index={i}
+            className="relative lg:pr-4"
+          >
+            <span
+              className={cn(
+                "absolute -left-[1.66rem] top-1 size-3 rounded-full ring-4 ring-surface transition-all duration-500 lg:-top-[3.1rem] lg:left-0",
+                passed ? "scale-110 bg-brand" : "bg-brand-light/40",
+              )}
+              aria-hidden="true"
+            />
+            <p
+              className={cn(
+                "font-display text-lg font-bold transition-colors duration-500",
+                passed ? "text-brand" : "text-brand/40",
+              )}
+            >
+              {item.year}
+            </p>
+            <p
+              className={cn(
+                "mt-2 text-sm leading-relaxed transition-opacity duration-500",
+                passed ? "text-muted-foreground opacity-100" : "text-muted-foreground opacity-50",
+              )}
+            >
+              {item.text}
+            </p>
+          </li>
+        );
+      })}
+    </ol>
+  );
+}
+
 export function History() {
   return (
     <section id="nossa-historia" className="bg-surface py-20 lg:py-28">
@@ -86,35 +152,28 @@ export function History() {
           </div>
         </Reveal>
 
-        {/* Timeline */}
+        {/* Timeline com scrollytelling: marcos se destacam conforme o scroll avança */}
         <Reveal className="mt-14">
-          <ol className="relative grid gap-8 border-l border-border pl-6 lg:grid-cols-6 lg:gap-6 lg:border-l-0 lg:border-t lg:pl-0 lg:pt-10">
-            {TIMELINE.map((item) => (
-              <li key={item.year} className="relative lg:pr-4">
-                <span
-                  className="absolute -left-[1.66rem] top-1 size-3 rounded-full bg-brand-light ring-4 ring-surface lg:-top-[3.1rem] lg:left-0"
-                  aria-hidden="true"
-                />
-                <p className="font-display text-lg font-bold text-brand">{item.year}</p>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{item.text}</p>
-              </li>
-            ))}
-          </ol>
+          <Timeline />
         </Reveal>
 
         <Reveal className="mt-12 grid gap-6 lg:grid-cols-[1fr_1fr]">
           <div className="flex flex-col justify-center rounded-xl bg-brand p-8 text-brand-foreground">
-            <p className="font-display text-4xl font-bold sm:text-5xl">≈ 2 milhões</p>
+            <p className="font-display text-4xl font-bold sm:text-5xl">
+              ≈ <Counter value={2} suffix=" milhões" />
+            </p>
             <p className="mt-3 text-sm text-brand-foreground/80">
               de visitantes recebidos ao longo da trajetória do Discovery Centre.
             </p>
           </div>
-          <img
-            src="/images/dci/history-galeria-atual.jpg"
-            alt="Uma das galerias do Discovery Centre em operação"
-            className="aspect-[16/9] w-full rounded-lg object-cover"
-            loading="lazy"
-          />
+          <div className="photo-frame aspect-[16/9] rounded-lg">
+            <img
+              src="/images/dci/history-galeria-atual.jpg"
+              alt="Uma das galerias do Discovery Centre em operação"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
         </Reveal>
 
         {/* Liderança */}

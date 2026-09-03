@@ -1,5 +1,5 @@
-import { Blocks, BookOpenCheck, Megaphone, RefreshCcw } from "lucide-react";
-import { ImagePlaceholder, Reveal, SectionTag } from "./shared";
+import { Blocks, BookOpenCheck, Megaphone, RefreshCcw, type LucideIcon } from "lucide-react";
+import { ImagePlaceholder, Marquee, Reveal, SectionTag, useTilt } from "./shared";
 
 const ITEMS = [
   {
@@ -69,6 +69,31 @@ const SUPPORT_LOGOS = [
   { name: "Grupo Cataratas", src: "/images/dci/logos/grupo-cataratas.jpg" },
 ];
 
+function DifferentiatorCard({
+  icon: Icon,
+  title,
+  emphasis,
+  text,
+}: {
+  icon: LucideIcon;
+  title: string;
+  emphasis: string;
+  text: string;
+}) {
+  const tiltRef = useTilt(3.5);
+  return (
+    <article
+      ref={tiltRef}
+      className="tilt-card h-full rounded-xl border border-border bg-surface p-6 hover:shadow-lg"
+    >
+      <Icon className="size-7 text-brand-medium" aria-hidden="true" />
+      <h3 className="mt-4 font-display text-lg font-bold text-brand">{title}</h3>
+      <p className="mt-1 text-xs font-bold uppercase tracking-widest text-brand-teal">{emphasis}</p>
+      <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
+    </article>
+  );
+}
+
 export function Differentiators() {
   return (
     <section id="diferenciais" className="bg-background py-20 lg:py-28">
@@ -85,16 +110,9 @@ export function Differentiators() {
         </Reveal>
 
         <div className="mt-12 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {ITEMS.map(({ icon: Icon, title, emphasis, text }, i) => (
-            <Reveal key={title} delay={i * 80}>
-              <article className="h-full rounded-xl border border-border bg-surface p-6 transition-transform hover:-translate-y-1">
-                <Icon className="size-7 text-brand-medium" aria-hidden="true" />
-                <h3 className="mt-4 font-display text-lg font-bold text-brand">{title}</h3>
-                <p className="mt-1 text-xs font-bold uppercase tracking-widest text-brand-teal">
-                  {emphasis}
-                </p>
-                <p className="mt-3 text-sm leading-relaxed text-muted-foreground">{text}</p>
-              </article>
+          {ITEMS.map((item, i) => (
+            <Reveal key={item.title} delay={i * 80}>
+              <DifferentiatorCard {...item} />
             </Reveal>
           ))}
         </div>
@@ -112,12 +130,14 @@ export function Differentiators() {
               ))}
             </ul>
           </div>
-          <img
-            src="/images/dci/differentiators-halifax.jpg"
-            alt="Sede do Discovery Centre em Halifax, Canadá"
-            className="aspect-[16/10] w-full rounded-lg border border-brand-foreground/25 object-cover"
-            loading="lazy"
-          />
+          <div className="photo-frame aspect-[16/10] rounded-lg border border-brand-foreground/25">
+            <img
+              src="/images/dci/differentiators-halifax.jpg"
+              alt="Sede do Discovery Centre em Halifax, Canadá"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
         </Reveal>
 
         {/* Adaptação cultural */}
@@ -181,18 +201,20 @@ export function Differentiators() {
             <h3 className="font-display text-2xl font-bold text-brand">Ecossistema de apoio em Halifax</h3>
           </Reveal>
           <Reveal delay={60}>
-            <div className="mt-6 grid grid-cols-2 gap-6 rounded-xl border border-border bg-surface p-8 sm:grid-cols-3 lg:grid-cols-6">
-              {SUPPORT_LOGOS.map((l) => (
-                <div key={l.name} className="flex items-center justify-center">
-                  <img
-                    src={l.src}
-                    alt={l.name}
-                    title={l.name}
-                    className="max-h-10 w-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
-                    loading="lazy"
-                  />
-                </div>
-              ))}
+            <div className="mt-6 rounded-xl border border-border bg-surface py-8">
+              <Marquee>
+                {SUPPORT_LOGOS.map((l) => (
+                  <div key={l.name} className="flex h-10 w-32 shrink-0 items-center justify-center">
+                    <img
+                      src={l.src}
+                      alt={l.name}
+                      title={l.name}
+                      className="max-h-10 w-full object-contain grayscale transition-all duration-300 hover:grayscale-0"
+                      loading="lazy"
+                    />
+                  </div>
+                ))}
+              </Marquee>
             </div>
           </Reveal>
         </div>

@@ -3,8 +3,16 @@ import { Reveal, SectionTag, TOUR_EMBED_URL, TOUR_URL } from "./shared";
 
 export function Tour() {
   return (
-    <section id="tour-virtual" className="bg-brand py-20 text-brand-foreground lg:py-28">
-      <div className="mx-auto grid max-w-7xl items-center gap-12 px-5 lg:grid-cols-2 lg:px-8">
+    <section id="tour-virtual" className="relative overflow-hidden bg-brand py-20 text-brand-foreground lg:py-28">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-30"
+        style={{
+          backgroundImage:
+            "radial-gradient(55% 55% at 85% 15%, var(--brand-light), transparent 70%), radial-gradient(45% 45% at 5% 90%, var(--brand-teal), transparent 70%)",
+        }}
+        aria-hidden="true"
+      />
+      <div className="relative mx-auto grid max-w-7xl items-center gap-12 px-5 lg:grid-cols-2 lg:px-8">
         <Reveal>
           <SectionTag tone="light">Tour Virtual</SectionTag>
           <h2 className="mt-5 font-display text-3xl font-bold leading-tight sm:text-4xl lg:text-5xl">

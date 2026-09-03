@@ -169,13 +169,95 @@
 
 @utility reveal {
   opacity: 0;
-  transform: translateY(24px);
+  transform: translateY(18px);
   transition:
-    opacity 0.7s ease,
-    transform 0.7s ease;
+    opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
 
   &[data-visible="true"] {
     opacity: 1;
     transform: none;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Camada 1: marquee infinita para faixas de logos */
+@utility marquee-track {
+  display: flex;
+  width: max-content;
+  animation: marquee-scroll 32s linear infinite;
+
+  &:hover {
+    animation-play-state: paused;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Camada 1: micro-interação tilt sutil em cards */
+@utility tilt-card {
+  transition:
+    transform 0.35s cubic-bezier(0.16, 1, 0.3, 1),
+    box-shadow 0.35s ease;
+  transform: perspective(900px) rotateX(var(--tilt-x, 0deg)) rotateY(var(--tilt-y, 0deg))
+    translateZ(0);
+  will-change: transform;
+
+  @media (prefers-reduced-motion: reduce) {
+    transform: none !important;
+    transition: none;
+  }
+}
+
+/* Camada 3: grain sutil de fundo, aplicado no body via ::after global */
+@utility grain-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 0.035;
+  mix-blend-mode: overlay;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* Camada 3: overlay duotone de marca sobre fotos */
+@utility photo-frame {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+
+  & > img {
+    display: block;
+  }
+
+  &::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(160deg, var(--brand) 0%, transparent 55%);
+    opacity: 0.16;
+    mix-blend-mode: multiply;
+    transition: opacity 0.4s ease;
+    pointer-events: none;
+  }
+
+  &:hover::after {
+    opacity: 0.06;
   }
 }

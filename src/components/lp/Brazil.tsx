@@ -31,12 +31,14 @@ export function Brazil() {
         </Reveal>
 
         <Reveal delay={120}>
-          <img
-            src="/images/dci/brazil-contexto-institucional.jpg"
-            alt="Apresentação institucional em evento do Discovery Centre"
-            className="aspect-[4/3] w-full rounded-lg object-cover"
-            loading="lazy"
-          />
+          <div className="photo-frame aspect-[4/3] rounded-lg">
+            <img
+              src="/images/dci/brazil-contexto-institucional.jpg"
+              alt="Apresentação institucional em evento do Discovery Centre"
+              className="h-full w-full object-cover"
+              loading="lazy"
+            />
+          </div>
         </Reveal>
       </div>
     </section>

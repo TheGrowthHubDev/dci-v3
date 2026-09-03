@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { ArrowRight, Sparkles, CalendarClock, Globe2 } from "lucide-react";
 import { Reveal, SCHEDULE_URL, SectionTag } from "./shared";
 import {
@@ -65,10 +65,46 @@ function HeroCarousel() {
   );
 }
 
+/**
+ * Parallax leve entre o gradiente de fundo e o carrossel, baseado no scroll.
+ * Amplitude pequena (editorial refinado) e desativado com prefers-reduced-motion.
+ */
+function useHeroParallax() {
+  const glowRef = useRef<HTMLDivElement>(null);
+  const carouselRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    let frame = 0;
+    const onScroll = () => {
+      cancelAnimationFrame(frame);
+      frame = requestAnimationFrame(() => {
+        const y = window.scrollY;
+        if (glowRef.current) {
+          glowRef.current.style.transform = `translateY(${Math.min(y * 0.12, 60)}px)`;
+        }
+        if (carouselRef.current) {
+          carouselRef.current.style.transform = `translateY(${Math.min(y * -0.05, 24)}px)`;
+        }
+      });
+    };
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => {
+      window.removeEventListener("scroll", onScroll);
+      cancelAnimationFrame(frame);
+    };
+  }, []);
+
+  return { glowRef, carouselRef };
+}
+
 export function Hero() {
+  const { glowRef, carouselRef } = useHeroParallax();
+
   return (
     <section id="topo" className="relative overflow-hidden bg-brand-deep pt-28 text-brand-foreground">
       <div
+        ref={glowRef}
         className="pointer-events-none absolute inset-0 opacity-40"
         style={{
           backgroundImage:
@@ -104,7 +140,9 @@ export function Hero() {
         </Reveal>
 
         <Reveal delay={120}>
-          <HeroCarousel />
+          <div ref={carouselRef}>
+            <HeroCarousel />
+          </div>
         </Reveal>
       </div>
 

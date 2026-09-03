@@ -10,6 +10,7 @@ import { Differentiators } from "@/components/lp/Differentiators";
 import { Brazil } from "@/components/lp/Brazil";
 import { FinalCta } from "@/components/lp/FinalCta";
 import { Footer } from "@/components/lp/Footer";
+import { SectionDivider } from "@/components/lp/shared";
 
 const TITLE = "Discovery Centre International no Brasil | Centros de Ciência";
 const DESCRIPTION =
@@ -56,14 +57,18 @@ function LandingPage() {
       <Header />
       <main>
         <Hero />
+        <SectionDivider fromColor="var(--brand-deep)" toColor="var(--background)" />
         <WhatIs />
         <History />
+        <SectionDivider fromColor="var(--surface)" toColor="var(--brand)" flip />
         <Tour />
+        <SectionDivider fromColor="var(--brand)" toColor="var(--background)" />
         <Model />
         <Audience />
         <Differentiators />
         <Brazil />
         <FinalCta />
+        <SectionDivider fromColor="var(--background)" toColor="var(--brand-deep)" flip />
       </main>
       <Footer />
     </div>

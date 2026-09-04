@@ -11,7 +11,7 @@ export const TOUR_URL =
   "https://my.matterport.com/models/3pmrByNdcc4?cta_origin=all_spaces_page&section=media";
 export const TOUR_EMBED_URL = "https://my.matterport.com/show/?m=3pmrByNdcc4";
 export const CONTACT_EMAIL = "info@dcinternational.ca";
-export const ADDRESS = "1215 Lower Water Street, Halifax, Nova Scotia, Canadá";
+export const ADDRESS = "1215 Lower Water Street, Halifax, Nova Scotia, Canadá B3J-3S8";
 
 export const NAV_LINKS = [
   { label: "Quem Somos", href: "#quem-somos" },

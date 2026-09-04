@@ -264,6 +264,13 @@ function LeaderCard({ leader }: { leader: Leader }) {
   );
 }
 
+const HISTORY_STATS = [
+  { value: "≈ 2", suffix: "milhões", label: "de visitantes recebidos" },
+  { value: "40", suffix: "anos", label: "de operação contínua" },
+  { value: "1985", suffix: "", label: "ano de fundação" },
+  { value: "3.700", suffix: "m²", label: "instalação LEED Platinum" },
+];
+
 export function History() {
   return (
     <section id="nossa-historia" className="relative overflow-hidden bg-surface py-24 lg:py-36">
@@ -272,14 +279,55 @@ export function History() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-        {/* Abertura: título + texto à esquerda / foto paisagem à direita */}
-        <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.25fr] lg:gap-16">
-          <div>
-            <Reveal variant="fade">
-              <SectionTag>Nossa História</SectionTag>
-            </Reveal>
-            <WordReveal text="A Origem do Discovery Centre" className="text-display-md mt-6 text-brand" />
-            <Reveal variant="blur" delay={300} className="mt-8 space-y-5 text-base leading-relaxed text-muted-foreground lg:text-lg">
+        {/* Hero card história: foto paisagem + gradiente + estatísticas na base */}
+        <Reveal variant="scale">
+          <div className="relative overflow-hidden rounded-[2rem] shadow-2xl">
+            <img
+              src="/images/dci/history-fachada-dia.jpg"
+              alt="Fachada do Discovery Centre em Halifax, com o letreiro Discovery e o painel das fases da Lua"
+              className="aspect-[16/10] w-full object-cover object-center sm:aspect-[21/9]"
+              loading="lazy"
+            />
+            {/* Gradientes para legibilidade */}
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-deep/95 via-brand-deep/80 to-brand-deep/25" />
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/85 via-transparent to-transparent" />
+
+            <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-10 lg:p-14">
+              <div className="max-w-2xl">
+                <SectionTag tone="light">Nossa História</SectionTag>
+                <h2 className="mt-4 font-display text-3xl font-extrabold leading-[1.1] text-white sm:text-4xl lg:text-5xl">
+                  A Origem do Discovery Centre
+                </h2>
+                <p className="mt-4 max-w-lg text-base leading-relaxed text-white/85 sm:text-lg">
+                  Quatro décadas de ciência interativa em Halifax, agora expandindo para novos países.
+                </p>
+              </div>
+
+              {/* Cards de estatísticas na base */}
+              <div className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-4 sm:gap-4 lg:gap-5">
+                {HISTORY_STATS.map((stat) => (
+                  <div
+                    key={stat.label}
+                    className="rounded-2xl bg-white/95 p-4 shadow-xl backdrop-blur-sm sm:p-5"
+                  >
+                    <p className="font-display text-2xl font-extrabold text-brand sm:text-3xl">
+                      {stat.value}{" "}
+                      <span className="text-brand-medium">{stat.suffix}</span>
+                    </p>
+                    <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-muted-foreground sm:text-xs">
+                      {stat.label}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </Reveal>
+
+        {/* Texto complementar */}
+        <Reveal variant="fade" delay={200} className="mt-14 lg:mt-20">
+          <div className="grid gap-8 lg:grid-cols-[1fr_1.2fr] lg:gap-16">
+            <div className="space-y-5 text-base leading-relaxed text-muted-foreground lg:text-lg">
               <p>
                 O Discovery Centre começou a tomar forma na década de 1970, a partir de demonstrações
                 científicas interativas desenvolvidas em Halifax.
@@ -288,37 +336,19 @@ export function History() {
                 A iniciativa cresceu, ganhou as ruas com programas itinerantes e, em{" "}
                 <strong className="text-brand">1985</strong>, tornou-se formalmente o Discovery Centre.
               </p>
+            </div>
+            <div className="space-y-5 text-base leading-relaxed text-muted-foreground lg:text-lg">
               <p>
                 Décadas depois, esse mesmo projeto reuniu apoio do Governo Canadense, do setor privado e
                 da comunidade para construir, do zero, um centro de quatro andares em Halifax, concebido
                 para receber experiências interativas, galerias, laboratórios e programação educacional.
               </p>
-            </Reveal>
+            </div>
           </div>
-
-          <Reveal variant="right" delay={200} className="relative">
-            <div className="photo-premium relative shadow-2xl">
-              <img
-                src="/images/dci/history-fachada-dia.jpg"
-                alt="Fachada do Discovery Centre em Halifax, com o letreiro Discovery e o painel das fases da Lua"
-                className="aspect-[16/10] w-full object-cover object-[center_60%]"
-                loading="lazy"
-              />
-            </div>
-            {/* Estatística flutuando sobre a foto */}
-            <div className="glass-light absolute -bottom-7 left-4 max-w-[260px] rounded-2xl p-5 shadow-xl sm:-left-8 lg:-left-10">
-              <p className="text-gradient-deep font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
-                ≈ <Counter value={2} suffix=" milhões" />
-              </p>
-              <p className="mt-2 text-sm leading-snug text-muted-foreground">
-                de visitantes recebidos ao longo da trajetória do Discovery Centre.
-              </p>
-            </div>
-          </Reveal>
-        </div>
+        </Reveal>
 
         {/* Timeline com scrollytelling */}
-        <Reveal variant="fade" className="mt-28 lg:mt-36">
+        <Reveal variant="fade" className="mt-24 lg:mt-32">
           <Timeline />
         </Reveal>
 

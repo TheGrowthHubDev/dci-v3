@@ -251,7 +251,7 @@ function ProjectPanel({ index, image }: { index: number; image?: Project["image"
           alt={image.alt}
           className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
           style={{ objectPosition: image.position ?? "center" }}
-          loading="lazy"
+          loading="eager"
           decoding="async"
         />
         <div

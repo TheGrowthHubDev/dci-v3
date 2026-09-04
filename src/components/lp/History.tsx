@@ -272,8 +272,8 @@ export function History() {
       </div>
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
-        {/* Abertura: título + texto em coluna / foto da sede */}
-        <div className="grid items-end gap-12 lg:grid-cols-[1fr_0.9fr] lg:gap-16">
+        {/* Abertura: título + texto à esquerda / foto paisagem à direita */}
+        <div className="grid items-center gap-12 lg:grid-cols-[0.9fr_1.25fr] lg:gap-16">
           <div>
             <Reveal variant="fade">
               <SectionTag>Nossa História</SectionTag>
@@ -296,17 +296,17 @@ export function History() {
             </Reveal>
           </div>
 
-          <Reveal variant="right" delay={200} className="relative mb-10 sm:ml-10 lg:ml-0">
+          <Reveal variant="right" delay={200} className="relative">
             <div className="photo-premium relative shadow-2xl">
               <img
                 src="/images/dci/history-fachada-dia.jpg"
                 alt="Fachada do Discovery Centre em Halifax, com o letreiro Discovery e o painel das fases da Lua"
-                className="aspect-[4/5] w-full object-cover object-[65%_center]"
+                className="aspect-[16/10] w-full object-cover object-[center_60%]"
                 loading="lazy"
               />
             </div>
             {/* Estatística flutuando sobre a foto */}
-            <div className="glass-light absolute -bottom-8 left-4 max-w-[260px] rounded-2xl p-6 shadow-xl sm:-left-10">
+            <div className="glass-light absolute -bottom-7 left-4 max-w-[260px] rounded-2xl p-5 shadow-xl sm:-left-8 lg:-left-10">
               <p className="text-gradient-deep font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
                 ≈ <Counter value={2} suffix=" milhões" />
               </p>

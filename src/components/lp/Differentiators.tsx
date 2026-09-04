@@ -149,12 +149,26 @@ const PROJECTS: Project[] = [
   {
     title: "Discovery Centre Dubai",
     status: "Franquia DCI proposta",
-    paragraphs: [],
+    paragraphs: [
+      "Proposta de centro de ciências adaptada ao contexto cultural e educacional dos Emirados Árabes Unidos, com arquitetura inspirada na exploração espacial e em grandes átrios de convivência.",
+    ],
+    image: {
+      src: dubaiAsset.url,
+      alt: "Render do interior da proposta de Discovery Centre em Dubai, com planetas suspensos em átrio de múltiplos níveis",
+      position: "center",
+    },
   },
   {
     title: "Discovery Centre Marrocos",
     status: "Franquia DCI proposta",
-    paragraphs: [],
+    paragraphs: [
+      "Proposta de fachada para o Discovery Centre em Marrocos, combinando linguagem arquitetônica contemporânea com referências ao território e à paisagem local.",
+    ],
+    image: {
+      src: marrocosAsset.url,
+      alt: "Render da fachada da proposta de Discovery Centre em Marrocos, com volumes curvos e painéis de vidro refletindo o céu",
+      position: "center",
+    },
   },
 ];
 

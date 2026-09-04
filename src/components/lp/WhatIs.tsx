@@ -1,6 +1,6 @@
 import { Hand, FlaskConical, Hammer, Lightbulb } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Reveal, SectionNumber, SectionTag, WordReveal, useParallax } from "./shared";
+import { OrbitBlobs, Reveal, SectionNumber, SectionTag, WordReveal, useParallax } from "./shared";
 
 const STEAM = [
   { icon: Hand, label: "Tocar" },
@@ -68,41 +68,13 @@ function PhotoCollage() {
 }
 
 /**
- * Manchas coloridas atrás do diagrama STEAM: paleta DCI + dois acentos quentes (amarelo/coral)
- * para o tom lúdico de centro de ciência, em formas orgânicas que "respiram".
- */
-const STEAM_BLOBS: Array<{ className: string; color: string; delay: string }> = [
-  { className: "-left-[14%] -top-[10%] size-[46%]", color: "var(--brand-light)", delay: "0s" },
-  { className: "-right-[16%] top-[4%] size-[40%]", color: "#f9c22e", delay: "-4s" },
-  { className: "-right-[10%] -bottom-[12%] size-[44%]", color: "var(--brand-teal)", delay: "-8s" },
-  { className: "-left-[12%] bottom-[2%] size-[36%]", color: "#e94d7a", delay: "-12s" },
-  { className: "left-[28%] -top-[16%] size-[26%]", color: "var(--brand)", delay: "-6s" },
-];
-
-function SteamBlobs() {
-  return (
-    <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-      {STEAM_BLOBS.map((b, i) => (
-        <span
-          key={i}
-          className={cn("blob", b.className)}
-          style={{ backgroundColor: b.color, opacity: 0.78, animationDelay: b.delay }}
-        />
-      ))}
-      {/* Suaviza o centro para o anel e os cards continuarem legíveis */}
-      <div className="absolute inset-[12%] rounded-full bg-background/55 blur-2xl" />
-    </div>
-  );
-}
-
-/**
  * STEAM em órbita: selo central com os quatro verbos girando em anel (CSS puro).
  */
 function SteamOrbit() {
   return (
     <div className="mx-auto w-full max-w-[380px] px-6 py-10 sm:px-8 sm:py-12">
       <div className="relative aspect-square w-full">
-        <SteamBlobs />
+        <OrbitBlobs />
         <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" aria-hidden="true" fill="none">
           <circle cx="200" cy="200" r="186" stroke="var(--color-border)" strokeDasharray="3 8" className="spin-slow" />
           <circle cx="200" cy="200" r="130" stroke="var(--color-border)" />

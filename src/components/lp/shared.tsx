@@ -239,6 +239,35 @@ export function BrandOrbit({
 }
 
 /**
+ * Manchas orgânicas coloridas atrás dos diagramas orbitais (STEAM, Turnkey):
+ * paleta DCI + dois acentos quentes (amarelo/coral) para o tom lúdico de centro
+ * de ciência, em formas que "respiram". 100% CSS, sem imagem.
+ */
+const ORBIT_BLOBS: Array<{ className: string; color: string; delay: string }> = [
+  { className: "-left-[14%] -top-[10%] size-[46%]", color: "var(--brand-light)", delay: "0s" },
+  { className: "-right-[16%] top-[4%] size-[40%]", color: "#f9c22e", delay: "-4s" },
+  { className: "-right-[10%] -bottom-[12%] size-[44%]", color: "var(--brand-teal)", delay: "-8s" },
+  { className: "-left-[12%] bottom-[2%] size-[36%]", color: "#e94d7a", delay: "-12s" },
+  { className: "left-[28%] -top-[16%] size-[26%]", color: "var(--brand)", delay: "-6s" },
+];
+
+export function OrbitBlobs({ className }: { className?: string }) {
+  return (
+    <div className={cn("pointer-events-none absolute inset-0", className)} aria-hidden="true">
+      {ORBIT_BLOBS.map((b, i) => (
+        <span
+          key={i}
+          className={cn("blob", b.className)}
+          style={{ backgroundColor: b.color, opacity: 0.78, animationDelay: b.delay }}
+        />
+      ))}
+      {/* Suaviza o centro para o anel e os cards continuarem legíveis */}
+      <div className="absolute inset-[12%] rounded-full bg-background/55 blur-2xl" />
+    </div>
+  );
+}
+
+/**
  * Número decorativo de seção (kicker "01", "02"...). Marcado aria-hidden:
  * é ornamento visual, não conteúdo.
  */

@@ -1,6 +1,6 @@
 import { Building2, GraduationCap, Settings2, HandCoins, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Reveal, SectionNumber, SectionTag, WordReveal, useMouseGlow } from "./shared";
+import { OrbitBlobs, Reveal, SectionNumber, SectionTag, WordReveal, useMouseGlow } from "./shared";
 
 const STEPS = [
   {
@@ -109,66 +109,70 @@ function StepCard({
 }
 
 /**
- * Diagrama turnkey: quatro nós orbitando o selo central (SVG + CSS).
+ * Diagrama turnkey: quatro nós orbitando o selo central (SVG + CSS),
+ * com as mesmas manchas coloridas do diagrama STEAM ao fundo.
  */
 function TurnkeyDiagram() {
   const r = 42;
   return (
-    <div className="relative mx-auto aspect-square w-full max-w-[420px]">
-      <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" fill="none" aria-hidden="true">
-        <circle cx="200" cy="200" r="168" stroke="var(--color-border)" />
-        <circle
-          cx="200"
-          cy="200"
-          r="168"
-          stroke="url(#turnkey-arc)"
-          strokeWidth="2"
-          strokeDasharray="260 800"
-          strokeLinecap="round"
-          className="spin-slow"
-        />
-        {TURNKEY_NODES.map((_, i) => {
+    <div className="mx-auto w-full max-w-[420px] px-6 py-8 sm:px-8 sm:py-10">
+      <div className="relative aspect-square w-full">
+        <OrbitBlobs />
+        <svg viewBox="0 0 400 400" className="absolute inset-0 h-full w-full" fill="none" aria-hidden="true">
+          <circle cx="200" cy="200" r="168" stroke="var(--color-border)" />
+          <circle
+            cx="200"
+            cy="200"
+            r="168"
+            stroke="url(#turnkey-arc)"
+            strokeWidth="2"
+            strokeDasharray="260 800"
+            strokeLinecap="round"
+            className="spin-slow"
+          />
+          {TURNKEY_NODES.map((_, i) => {
+            const a = ((-90 + i * 90) * Math.PI) / 180;
+            return (
+              <line
+                key={i}
+                x1="200"
+                y1="200"
+                x2={200 + 168 * Math.cos(a)}
+                y2={200 + 168 * Math.sin(a)}
+                stroke="var(--color-border)"
+                strokeDasharray="3 6"
+              />
+            );
+          })}
+          <defs>
+            <linearGradient id="turnkey-arc" x1="0" x2="1">
+              <stop offset="0" stopColor="var(--brand-light)" />
+              <stop offset="1" stopColor="var(--brand-teal)" />
+            </linearGradient>
+          </defs>
+        </svg>
+
+        <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
+          <span className="glow-brand block rounded-full bg-brand px-6 py-3 text-center font-display text-sm font-bold text-brand-foreground sm:px-8 sm:py-4 sm:text-base">
+            Modelo Turnkey
+          </span>
+        </div>
+
+        {TURNKEY_NODES.map((node, i) => {
           const a = ((-90 + i * 90) * Math.PI) / 180;
+          const x = 50 + r * Math.cos(a);
+          const y = 50 + r * Math.sin(a);
           return (
-            <line
-              key={i}
-              x1="200"
-              y1="200"
-              x2={200 + 168 * Math.cos(a)}
-              y2={200 + 168 * Math.sin(a)}
-              stroke="var(--color-border)"
-              strokeDasharray="3 6"
-            />
+            <span
+              key={node}
+              className="card-premium absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-brand shadow-md float-slow"
+              style={{ left: `${x}%`, top: `${y}%`, animationDelay: `${i * 0.7}s` }}
+            >
+              {node}
+            </span>
           );
         })}
-        <defs>
-          <linearGradient id="turnkey-arc" x1="0" x2="1">
-            <stop offset="0" stopColor="var(--brand-light)" />
-            <stop offset="1" stopColor="var(--brand-teal)" />
-          </linearGradient>
-        </defs>
-      </svg>
-
-      <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2">
-        <span className="glow-brand block rounded-full bg-brand px-6 py-3 text-center font-display text-sm font-bold text-brand-foreground sm:px-8 sm:py-4 sm:text-base">
-          Modelo Turnkey
-        </span>
       </div>
-
-      {TURNKEY_NODES.map((node, i) => {
-        const a = ((-90 + i * 90) * Math.PI) / 180;
-        const x = 50 + r * Math.cos(a);
-        const y = 50 + r * Math.sin(a);
-        return (
-          <span
-            key={node}
-            className="card-premium absolute -translate-x-1/2 -translate-y-1/2 whitespace-nowrap rounded-full px-4 py-2 text-sm font-semibold text-brand shadow-md float-slow"
-            style={{ left: `${x}%`, top: `${y}%`, animationDelay: `${i * 0.7}s` }}
-          >
-            {node}
-          </span>
-        );
-      })}
     </div>
   );
 }

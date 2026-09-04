@@ -286,7 +286,7 @@ export function History() {
               src="/images/dci/history-fachada-dia.jpg"
               alt="Fachada do Discovery Centre em Halifax, com o letreiro Discovery e o painel das fases da Lua"
               className="aspect-[16/9] w-full object-cover"
-              style={{ objectPosition: "40% 55%" }}
+              style={{ objectPosition: "30% 55%" }}
               loading="lazy"
             />
             {/* Gradientes para legibilidade */}

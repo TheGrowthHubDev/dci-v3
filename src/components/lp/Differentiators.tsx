@@ -29,6 +29,7 @@ import {
 } from "./shared";
 import dubaiAsset from "@/assets/dci/projeto-dubai.png.asset.json";
 import marrocosAsset from "@/assets/dci/projeto-marrocos.png.asset.json";
+import medavieBenefitsAsset from "@/assets/dci/logos/medavie-benefits.png.asset.json";
 
 const ITEMS = [
   {
@@ -189,7 +190,7 @@ const PARTNERS: Partner[] = [
   {
     name: "Medavie Health Foundation",
     text: "Parceira no desenvolvimento de exibições e áreas temáticas voltadas para a educação de saúde e bem-estar",
-    logo: "/images/dci/logos/medavie.svg",
+    logo: medavieBenefitsAsset.url,
   },
   {
     name: "Governo do Canadá",
@@ -203,7 +204,7 @@ const SUPPORT_LOGOS = [
   { name: "IMP Aerospace & Defence", src: "/images/dci/logos/imp-aerospace-defence.png" },
   { name: "Nova Scotia Power", src: "/images/dci/logos/nova-scotia-power.png" },
   { name: "Saint Mary's University", src: "/images/dci/logos/saint-marys-university.svg" },
-  { name: "Medavie", src: "/images/dci/logos/medavie.svg" },
+  { name: "Medavie", src: medavieBenefitsAsset.url },
   { name: "RBC", src: "/images/dci/logos/rbc.svg" },
   { name: "Grupo Cataratas", src: "/images/dci/logos/grupo-cataratas.jpg" },
 ];

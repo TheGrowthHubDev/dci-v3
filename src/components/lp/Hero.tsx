@@ -15,6 +15,7 @@ const PROOFS = [
  */
 const HERO_PHOTOS = [
   "/images/dci/hero-carousel-1.jpg",
+  "/images/dci/hero-carousel-6.jpg", // fachada do Discovery Centre em Halifax (letreiro DISCOVERY)
   "/images/dci/hero-carousel-2.jpg",
   "/images/dci/hero-carousel-3.jpg",
   "/images/dci/hero-carousel-4.jpg",

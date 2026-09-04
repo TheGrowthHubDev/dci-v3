@@ -42,31 +42,65 @@ const TIMELINE = [
   },
 ];
 
-const LEADERS = [
+// Retratos, nomes e cargos oficiais: dcinternational.ca/index.php/about/ ("Meet our Team")
+type Leader = {
+  name: string;
+  role: string;
+  /** Bio aprovada (opcional — membros sem texto aprovado exibem só nome/cargo). */
+  bio?: string;
+  photo?: string;
+};
+
+const LEADERS: Leader[] = [
   {
     name: "Dov Bercovici",
     role: "President & CEO",
     bio: "Reconhecido no Top 50 CEO Hall of Fame, liderou a reconstrução do Discovery Centre em Halifax, da mobilização de capital à inauguração da sede atual em 2017.",
+    photo: "/images/dci/team/dov-bercovici.jpg",
   },
   {
     name: "Marcos Miranda",
     role: "VP of International Business Development, Discovery Centre International",
     bio: "Mais de 25 países de experiência em expansão internacional, à frente da condução do projeto no Brasil.",
+    photo: "/images/dci/team/marcos-miranda.jpg",
+  },
+  {
+    name: "Ricardo Cancela",
+    role: "Brazil Ambassador",
+    photo: "/images/dci/team/ricardo-cancela.jpg",
   },
   {
     name: "Ryan Jameson",
     role: "Director of Science Education",
     bio: "Liderança responsável pela frente de educação científica e pela aplicação da experiência pedagógica do Discovery Centre.",
+    photo: "/images/dci/team/ryan-jameson.jpg",
   },
   {
     name: "Ruth Munro",
     role: "Director of Exhibits & Facilities",
     bio: "Liderança ligada à experiência física, exposições e infraestrutura do Discovery Centre.",
+    photo: "/images/dci/team/ruth-munro.jpg",
   },
   {
     name: "Helen Dolan",
     role: "Director of Partnerships",
     bio: "Liderança dedicada à construção e gestão de parcerias institucionais.",
+    photo: "/images/dci/team/helen-dolan.jpg",
+  },
+  {
+    name: "Jennifer Punch",
+    role: "Chief Operating Officer",
+    photo: "/images/dci/team/jennifer-punch.jpg",
+  },
+  {
+    name: "Linda Laurence",
+    role: "Director of Human Resources",
+    photo: "/images/dci/team/linda-laurence.jpg",
+  },
+  {
+    name: "Laura Jones",
+    role: "Marketing Coordinator",
+    photo: "/images/dci/team/laura-jones.jpg",
   },
 ];
 
@@ -171,31 +205,61 @@ function Timeline() {
   );
 }
 
-function LeaderCard({ leader }: { leader: (typeof LEADERS)[number] }) {
+function LeaderCard({ leader }: { leader: Leader }) {
   const ref = useMouseGlow<HTMLElement>();
+  const [photoFailed, setPhotoFailed] = useState(false);
+  const showPhoto = Boolean(leader.photo) && !photoFailed;
+
   return (
-    <article ref={ref} className="card-premium flex h-full flex-col p-7">
-      <div className="flex items-center gap-4">
-        <span
-          className="flex size-16 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-br from-brand via-brand-medium to-brand-light font-display text-xl font-extrabold text-white shadow-lg"
+    <article ref={ref} className="card-premium group flex h-full flex-col overflow-hidden">
+      {/* Retrato */}
+      <div className="relative aspect-[4/5] w-full overflow-hidden bg-gradient-to-br from-brand via-brand-medium to-brand-light">
+        {showPhoto ? (
+          <img
+            src={leader.photo}
+            alt={`Retrato de ${leader.name}`}
+            width={500}
+            height={650}
+            loading="lazy"
+            decoding="async"
+            onError={() => setPhotoFailed(true)}
+            className="absolute inset-0 size-full object-cover object-top transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          />
+        ) : (
+          <span
+            className="absolute inset-0 flex items-center justify-center font-display text-6xl font-extrabold text-white/90"
+            aria-hidden="true"
+          >
+            {initials(leader.name)}
+          </span>
+        )}
+        {/* Gradiente para leitura do nome sobre a foto */}
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-2/5 bg-gradient-to-t from-brand-deep/90 via-brand-deep/40 to-transparent"
           aria-hidden="true"
-        >
-          {initials(leader.name)}
-        </span>
-        <div>
-          <p className="font-display text-lg font-bold leading-tight text-brand">{leader.name}</p>
-          <p className="mt-1 text-xs font-semibold uppercase tracking-wider text-brand-medium">
+        />
+        <div className="absolute inset-x-0 bottom-0 p-5">
+          <p className="font-display text-lg font-bold leading-tight text-white">{leader.name}</p>
+          <p className="mt-1 text-[11px] font-semibold uppercase tracking-wider text-white/85">
             {leader.role}
           </p>
         </div>
       </div>
-      <p className="mt-5 flex-1 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>
-      <a
-        href={`mailto:${CONTACT_EMAIL}?subject=Contato%20-%20${encodeURIComponent(leader.name)}`}
-        className="nav-underline mt-6 inline-flex w-fit items-center gap-2 text-sm font-bold text-brand"
-      >
-        <Mail className="size-4" aria-hidden="true" /> Enviar e-mail
-      </a>
+
+      {/* Bio + contato */}
+      <div className="flex flex-1 flex-col p-6">
+        {leader.bio ? (
+          <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>
+        ) : (
+          <span className="flex-1" aria-hidden="true" />
+        )}
+        <a
+          href={`mailto:${CONTACT_EMAIL}?subject=Contato%20-%20${encodeURIComponent(leader.name)}`}
+          className="nav-underline mt-5 inline-flex w-fit items-center gap-2 text-sm font-bold text-brand"
+        >
+          <Mail className="size-4" aria-hidden="true" /> Enviar e-mail
+        </a>
+      </div>
     </article>
   );
 }

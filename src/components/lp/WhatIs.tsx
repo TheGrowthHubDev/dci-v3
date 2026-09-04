@@ -18,33 +18,33 @@ const ROLES = [
 ];
 
 /**
- * Colagem editorial: três fotos sobrepostas com parallax leve entre camadas.
+ * Colagem editorial: foto principal em paisagem (3:2, sem recorte) com duas fotos menores
+ * sobrepondo a borda inferior, e parallax leve entre camadas.
  */
 function PhotoCollage() {
   const back = useParallax<HTMLDivElement>(0.06);
   const front = useParallax<HTMLDivElement>(-0.05);
 
   return (
-    <div className="relative mx-auto mb-8 aspect-[4/5] w-full max-w-[520px] lg:mx-0">
+    <div className="relative mx-auto mb-16 w-full max-w-[640px] sm:mb-20 lg:mx-0">
       <div className="dot-grid absolute -inset-10 text-brand" aria-hidden="true" />
 
       <div
         ref={back}
-        className="photo-premium absolute left-0 top-0 w-[72%] shadow-2xl"
+        className="photo-premium relative w-full shadow-2xl"
         style={{ transform: "translateY(var(--py, 0px))" }}
       >
         <img
           src="/images/dci/whatis-principal.jpg"
-          alt="Criança com luvas coloridas segurando uma bola flutuante durante demonstração científica no Discovery Centre"
-          className="aspect-[4/5] w-full object-cover"
-          style={{ objectPosition: "58% center" }}
+          alt="Educador do Discovery Centre conduz demonstração científica enquanto um menino com luvas coloridas segura uma bola flutuante"
+          className="aspect-[3/2] w-full object-cover"
           loading="lazy"
         />
       </div>
 
       <div
         ref={front}
-        className="photo-premium absolute bottom-[8%] right-0 w-[58%] shadow-2xl ring-8 ring-background"
+        className="photo-premium absolute -bottom-[14%] right-[4%] w-[38%] shadow-2xl ring-8 ring-background"
         style={{ transform: "translateY(var(--py, 0px))" }}
       >
         <img
@@ -55,7 +55,7 @@ function PhotoCollage() {
         />
       </div>
 
-      <div className="photo-premium absolute -bottom-6 left-[10%] w-[42%] shadow-2xl ring-8 ring-background float-slow">
+      <div className="photo-premium absolute -bottom-[10%] left-[4%] w-[26%] shadow-2xl ring-8 ring-background float-slow">
         <img
           src="/images/dci/whatis-maker.jpg"
           alt="Crianças montando circuitos em um espaço maker"
@@ -162,7 +162,7 @@ export function WhatIs() {
 
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         {/* Abertura em duas colunas: statement + colagem */}
-        <div className="grid items-center gap-14 lg:grid-cols-[1.05fr_0.95fr] lg:gap-20">
+        <div className="grid items-center gap-14 lg:grid-cols-[0.95fr_1.05fr] lg:gap-16">
           <div>
             <Reveal variant="fade">
               <SectionTag>O projeto</SectionTag>

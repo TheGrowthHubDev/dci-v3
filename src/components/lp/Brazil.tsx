@@ -1,5 +1,62 @@
+import { useEffect, useState } from "react";
 import { ArrowRight } from "lucide-react";
+import { cn } from "@/lib/utils";
 import { Reveal, SCHEDULE_URL, SectionNumber, SectionTag, WordReveal, useParallax } from "./shared";
+
+/** Seis momentos distintos de crianças no Discovery Centre (fotos reais). */
+const KIDS_PHOTOS: { src: string; position: string }[] = [
+  { src: "/images/dci/brazil-kids-1.jpg", position: "65% 50%" },
+  { src: "/images/dci/brazil-kids-2.jpg", position: "70% 50%" },
+  { src: "/images/dci/brazil-kids-3.jpg", position: "50% 50%" },
+  { src: "/images/dci/brazil-kids-4.jpg", position: "60% 50%" },
+  { src: "/images/dci/brazil-kids-5.jpg", position: "45% 50%" },
+  { src: "/images/dci/brazil-kids-6.jpg", position: "50% 50%" },
+];
+
+const KIDS_SLIDE_MS = 4500;
+
+/**
+ * Troca automática de fotos com crossfade + Ken Burns (mesma linguagem do Hero).
+ * Sem setas nem indicadores: apenas rotação contínua.
+ */
+function KidsRotator() {
+  const [index, setIndex] = useState(0);
+
+  useEffect(() => {
+    const id = setInterval(() => setIndex((i) => (i + 1) % KIDS_PHOTOS.length), KIDS_SLIDE_MS);
+    return () => clearInterval(id);
+  }, []);
+
+  return (
+    <div
+      className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[4/3] lg:aspect-[4/5]"
+      role="img"
+      aria-label="Crianças explorando experiências científicas no Discovery Centre"
+    >
+      {KIDS_PHOTOS.map((photo, i) => {
+        const isActive = i === index;
+        return (
+          <div
+            key={photo.src}
+            className={cn(
+              "absolute inset-0 transition-opacity duration-[1600ms] ease-[cubic-bezier(0.16,1,0.3,1)]",
+              isActive ? "opacity-100" : "opacity-0",
+            )}
+            aria-hidden="true"
+          >
+            <img
+              src={photo.src}
+              alt=""
+              className={cn("h-full w-full object-cover", isActive && "kenburns")}
+              style={{ objectPosition: photo.position }}
+              loading={i === 0 ? "eager" : "lazy"}
+            />
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 /**
  * Grafismo abstrato Canadá → Brasil: arco de conexão entre dois pontos (SVG animado).
@@ -97,12 +154,7 @@ export function Brazil() {
                 className="photo-premium relative shadow-2xl"
                 style={{ transform: "translateY(var(--py, 0px))" }}
               >
-                <img
-                  src="/images/dci/brazil-contexto-institucional.jpg"
-                  alt="Apresentação institucional em evento do Discovery Centre"
-                  className="aspect-[4/5] w-full object-cover sm:aspect-[4/3] lg:aspect-[4/5]"
-                  loading="lazy"
-                />
+                <KidsRotator />
               </div>
             </Reveal>
           </div>

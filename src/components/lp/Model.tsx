@@ -248,9 +248,9 @@ export function Model() {
             <Reveal variant="scale" delay={250} className="mt-10">
               <div className="photo-premium relative shadow-2xl">
                 <img
-                  src="/images/dci/model-adaptacao-local.jpg"
-                  alt="Apresentação institucional de uma experiência interativa do centro"
-                  className="aspect-[16/9] w-full object-cover"
+                  src="/images/dci/projeto-argelia-render.jpg"
+                  alt="Perspectiva aérea da proposta de franquia DCI na Argélia, com domo geodésico central"
+                  className="aspect-[16/9] w-full object-cover object-[center_35%]"
                   loading="lazy"
                 />
               </div>

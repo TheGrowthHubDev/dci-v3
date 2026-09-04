@@ -46,10 +46,22 @@ const HALIFAX = [
   "Aproximadamente 2 milhões de visitantes recebidos ao longo da trajetória",
 ];
 
-const PROJECTS = [
+type Project = {
+  title: string;
+  text: string;
+  /** Imagem real do projeto (opcional — sem imagem, exibe painel gráfico). */
+  image?: { src: string; alt: string; position?: string };
+};
+
+const PROJECTS: Project[] = [
   {
     title: "Argélia",
     text: "Um projeto estruturado respeitando o contexto cultural e educacional local.",
+    image: {
+      src: "/images/dci/projeto-argelia-render.jpg",
+      alt: "Perspectiva aérea da proposta de franquia DCI na Argélia, com domo geodésico central",
+      position: "center 30%",
+    },
   },
   {
     title: "Nova Scotia Rural — Discovery West Nova",
@@ -57,16 +69,30 @@ const PROJECTS = [
   },
 ];
 
-const PARTNERS = [
+type Partner = {
+  name: string;
+  text: string;
+  logo?: string;
+  /** Classe extra para o contêiner do logo (ex.: fundo branco para logos com fundo próprio). */
+  logoClassName?: string;
+};
+
+const PARTNERS: Partner[] = [
   {
     name: "Dalhousie University",
     text: "Parceria acadêmica ligada ao Beaty Centre for Marine Biodiversity.",
     logo: "/images/dci/logos/dalhousie.svg",
   },
-  { name: "Maple Bear Global Schools", text: "Parceria pedagógica em educação." },
+  {
+    name: "Medavie Health Foundation",
+    text: "Parceira no desenvolvimento de exibições e áreas temáticas voltadas para a educação de saúde e bem-estar",
+    logo: "/images/dci/logos/medavie.svg",
+  },
   {
     name: "Governo do Canadá",
     text: "Sinal institucional de um ecossistema construído com participação pública, privada e comunitária ao longo da história do Discovery Centre.",
+    logo: "/images/dci/logos/governo-canada-logo.png",
+    logoClassName: "bg-white",
   },
 ];
 
@@ -112,9 +138,31 @@ function DifferentiatorCard({
 }
 
 /**
- * Painel abstrato de projeto (sem foto real disponível): grafismo de marca + título.
+ * Painel de projeto: imagem real quando disponível; caso contrário, grafismo de marca + número.
  */
-function ProjectPanel({ index }: { index: number }) {
+function ProjectPanel({ index, image }: { index: number; image?: Project["image"] }) {
+  if (image) {
+    return (
+      <div className="relative isolate aspect-[16/9] overflow-hidden bg-brand-deep">
+        <img
+          src={image.src}
+          alt={image.alt}
+          className="absolute inset-0 size-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+          style={{ objectPosition: image.position ?? "center" }}
+          loading="lazy"
+          decoding="async"
+        />
+        <div
+          className="pointer-events-none absolute inset-x-0 bottom-0 h-1/2 bg-gradient-to-t from-brand-deep/80 to-transparent"
+          aria-hidden="true"
+        />
+        <span className="text-outline-light absolute bottom-4 left-6 text-7xl" aria-hidden="true">
+          0{index + 1}
+        </span>
+      </div>
+    );
+  }
+
   return (
     <div
       className={cn(
@@ -180,14 +228,15 @@ export function Differentiators() {
             style={{ transform: "translateY(var(--py, 0px))" }}
           >
             <img
-              src="/images/dci/differentiators-halifax.jpg"
-              alt="Sede do Discovery Centre em Halifax, Canadá"
-              className="h-full w-full object-cover"
+              src="/images/dci/differentiators-halifax-noite.jpg"
+              alt="Fachada do Discovery Centre em Halifax ao anoitecer, com o painel das fases da Lua iluminado"
+              className="h-full w-full object-cover object-[70%_center]"
               loading="lazy"
             />
           </div>
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-deep via-brand-deep/80 to-brand-deep/20" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/90 via-transparent to-brand-deep/30" />
+          {/* Overlay mais leve à direita para deixar a fachada visível; texto fica sobre a faixa escura à esquerda */}
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-deep via-brand-deep/75 to-brand-deep/10" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/85 via-transparent to-brand-deep/20" />
 
           <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-center px-5 py-20 lg:min-h-[680px] lg:px-8">
             <div className="max-w-2xl">
@@ -216,8 +265,8 @@ export function Differentiators() {
           <div className="mt-10 grid gap-6 md:grid-cols-2">
             {PROJECTS.map((p, i) => (
               <Reveal key={p.title} delay={i * 120} variant="scale">
-                <article className="card-premium h-full overflow-hidden">
-                  <ProjectPanel index={i} />
+                <article className="card-premium group h-full overflow-hidden">
+                  <ProjectPanel index={i} image={p.image} />
                   <div className="p-7 lg:p-8">
                     <h4 className="font-display text-2xl font-extrabold tracking-tight text-brand">{p.title}</h4>
                     <p className="mt-3 text-base leading-relaxed text-muted-foreground">{p.text}</p>
@@ -238,7 +287,12 @@ export function Differentiators() {
               <Reveal key={p.name} delay={i * 100} className="h-full">
                 <article className="card-premium flex h-full flex-col p-7">
                   {p.logo ? (
-                    <div className="mb-6 flex aspect-[5/2] items-center justify-center rounded-xl bg-surface p-5">
+                    <div
+                      className={cn(
+                        "mb-6 flex aspect-[5/2] items-center justify-center rounded-xl bg-surface p-5",
+                        p.logoClassName,
+                      )}
+                    >
                       <img
                         src={p.logo}
                         alt={`Logo ${p.name}`}

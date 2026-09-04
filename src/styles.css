@@ -350,7 +350,8 @@
   position: relative;
   isolation: isolate;
   border-radius: 1.25rem;
-  background: color-mix(in oklch, white 5%, transparent);
+  /* Fundo sempre opaco e escuro: em hover só clareia levemente (mantém contraste do texto branco) */
+  background: var(--brand-deep);
   border: 1px solid color-mix(in oklch, white 12%, transparent);
   transition:
     transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
@@ -377,7 +378,8 @@
   &:hover {
     transform: translateY(-6px);
     border-color: color-mix(in oklch, var(--brand-light) 55%, transparent);
-    background: color-mix(in oklch, white 8%, transparent);
+    background: color-mix(in oklch, var(--brand-deep) 88%, var(--brand-light));
+    box-shadow: 0 30px 60px -28px color-mix(in oklch, var(--brand-deep) 70%, transparent);
   }
 
   &:hover::before {
@@ -549,6 +551,35 @@
   }
   50% {
     transform: translateY(-10px);
+  }
+}
+
+/* Manchas orgânicas coloridas (fundo do diagrama STEAM): forma "blob" que respira lentamente */
+@utility blob {
+  position: absolute;
+  border-radius: 58% 42% 55% 45% / 48% 60% 40% 52%;
+  filter: blur(2px);
+  animation: blob-morph 16s ease-in-out infinite;
+  will-change: transform, border-radius;
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+  }
+}
+
+@keyframes blob-morph {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg) scale(1);
+    border-radius: 58% 42% 55% 45% / 48% 60% 40% 52%;
+  }
+  33% {
+    transform: translate(4%, -5%) rotate(6deg) scale(1.05);
+    border-radius: 45% 55% 42% 58% / 58% 44% 56% 42%;
+  }
+  66% {
+    transform: translate(-3%, 4%) rotate(-5deg) scale(0.97);
+    border-radius: 52% 48% 60% 40% / 42% 55% 45% 58%;
   }
 }
 

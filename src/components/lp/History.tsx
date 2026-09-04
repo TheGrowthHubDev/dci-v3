@@ -299,9 +299,9 @@ export function History() {
           <Reveal variant="right" delay={200} className="relative mb-10 sm:ml-10 lg:ml-0">
             <div className="photo-premium relative shadow-2xl">
               <img
-                src="/images/dci/history-sede-2017.jpg"
-                alt="Escadaria da sede atual do Discovery Centre, com mural que vai da Terra ao espaço"
-                className="aspect-[4/5] w-full object-cover"
+                src="/images/dci/history-fachada-dia.jpg"
+                alt="Fachada do Discovery Centre em Halifax, com o letreiro Discovery e o painel das fases da Lua"
+                className="aspect-[4/5] w-full object-cover object-[65%_center]"
                 loading="lazy"
               />
             </div>
@@ -326,9 +326,9 @@ export function History() {
         <Reveal variant="scale" className="mt-20">
           <div className="photo-premium relative shadow-2xl">
             <img
-              src="/images/dci/history-galeria-atual.jpg"
-              alt="Uma das galerias do Discovery Centre em operação"
-              className="aspect-[21/9] w-full object-cover"
+              src="/images/dci/history-onibus-escolar.jpg"
+              alt="Ônibus escolar chegando à entrada do Discovery Centre em Halifax"
+              className="aspect-[21/9] w-full object-cover object-[center_40%]"
               loading="lazy"
             />
           </div>

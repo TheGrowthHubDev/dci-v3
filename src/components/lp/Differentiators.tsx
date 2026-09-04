@@ -58,14 +58,19 @@ const PROJECTS: Project[] = [
     title: "Argélia",
     text: "Um projeto estruturado respeitando o contexto cultural e educacional local.",
     image: {
-      src: "/images/dci/projeto-argelia-render.jpg",
-      alt: "Perspectiva aérea da proposta de franquia DCI na Argélia, com domo geodésico central",
-      position: "center 30%",
+      src: "/images/dci/projeto-argelia.jpg",
+      alt: "Render da fachada do projeto DCI na Argélia, com volume suspenso, domo e praça de acesso",
+      position: "center 45%",
     },
   },
   {
     title: "Nova Scotia Rural — Discovery West Nova",
     text: "Um modelo itinerante, com vans educativas, levando o mesmo princípio de experiência para comunidades fora dos grandes centros urbanos.",
+    image: {
+      src: "/images/dci/projeto-discovery-west-nova.jpg",
+      alt: "Grupo de crianças com bonés do Discovery Centre acompanhadas por educadoras em atividade ao ar livre",
+      position: "center 40%",
+    },
   },
 ];
 

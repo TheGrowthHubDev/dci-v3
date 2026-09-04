@@ -34,9 +34,10 @@ function PhotoCollage() {
         style={{ transform: "translateY(var(--py, 0px))" }}
       >
         <img
-          src="/images/dci/whatis-escolas.jpg"
-          alt="Escolas em visita a um centro de ciência interativo"
+          src="/images/dci/whatis-principal.jpg"
+          alt="Criança com luvas coloridas segurando uma bola flutuante durante demonstração científica no Discovery Centre"
           className="aspect-[4/5] w-full object-cover"
+          style={{ objectPosition: "58% center" }}
           loading="lazy"
         />
       </div>

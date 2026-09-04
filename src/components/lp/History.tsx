@@ -133,7 +133,7 @@ function Timeline() {
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            const index = Number((entry.target as HTMLElement).dataset.index);
+            const index = Number((entry.target as HTMLElement).dataset['index']);
             setActiveIndex((prev) => Math.max(prev, index));
           }
         });

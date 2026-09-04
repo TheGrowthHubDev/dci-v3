@@ -27,6 +27,8 @@ import {
   useMouseGlow,
   useParallax,
 } from "./shared";
+import dubaiAsset from "@/assets/dci/projeto-dubai.png.asset.json";
+import marrocosAsset from "@/assets/dci/projeto-marrocos.png.asset.json";
 
 const ITEMS = [
   {

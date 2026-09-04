@@ -1,4 +1,4 @@
-import { ArrowRight, Award, Building2, Landmark, PencilLine, Users, type LucideIcon } from "lucide-react";
+import { ArrowRight, Award, Building2, Landmark, Users, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandOrbit, Reveal, SectionNumber, SectionTag, useMouseGlow } from "./shared";
 
@@ -13,12 +13,8 @@ type AudienceCardData = {
   featured?: boolean;
 };
 
-/**
- * RASCUNHO — sub-bloco de naming rights.
- * Texto provisório enquanto a Isadora redige a versão definitiva (conforme call).
- * Fácil de localizar/substituir: procurar por "NAMING_RIGHTS_DRAFT".
- */
-const NAMING_RIGHTS_DRAFT = {
+/** Sub-bloco de naming rights. */
+const NAMING_RIGHTS = {
   intro:
     "O investidor âncora não viabiliza o projeto sozinho: parte relevante do CAPEX costuma vir de patrocínios e parcerias associadas a espaços e experiências específicas do centro.",
   example:
@@ -226,27 +222,21 @@ export function Audience() {
           ))}
         </div>
 
-        {/* RASCUNHO — Naming rights (texto provisório, aguardando redação final da Isadora) */}
+        {/* Naming rights */}
         <Reveal variant="scale" className="mt-20">
-          <div className="card-premium relative overflow-hidden border-2 border-dashed border-brand-medium/40 p-7 lg:p-12">
-            <div className="mb-8 flex flex-wrap items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 rounded-full bg-brand-medium/12 px-3.5 py-1.5 text-[0.7rem] font-bold uppercase tracking-[0.18em] text-brand-medium">
-                <PencilLine className="size-3.5" aria-hidden="true" />
-                Rascunho — texto provisório
-              </span>
-            </div>
+          <div className="card-premium relative overflow-hidden p-7 lg:p-12">
             <div className="grid gap-10 lg:grid-cols-[1.1fr_0.9fr] lg:gap-16">
               <div>
                 <h3 className="text-display-md text-brand">Naming rights: legado com nome próprio</h3>
                 <p className="mt-6 text-base leading-relaxed text-muted-foreground lg:text-lg">
-                  {NAMING_RIGHTS_DRAFT.intro}
+                  {NAMING_RIGHTS.intro}
                 </p>
                 <p className="mt-6 rounded-2xl border-l-4 border-brand-teal bg-surface p-5 text-sm leading-relaxed text-foreground lg:text-base">
-                  {NAMING_RIGHTS_DRAFT.example}
+                  {NAMING_RIGHTS.example}
                 </p>
               </div>
               <ul className="divide-y divide-border">
-                {NAMING_RIGHTS_DRAFT.items.map((item, i) => (
+                {NAMING_RIGHTS.items.map((item, i) => (
                   <li key={item.title} className="group flex gap-5 py-6 first:pt-0 last:pb-0">
                     <span className="text-outline shrink-0 text-3xl" aria-hidden="true">
                       0{i + 1}

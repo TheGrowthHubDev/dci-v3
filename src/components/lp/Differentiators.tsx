@@ -293,14 +293,14 @@ export function Differentiators() {
                   {p.logo ? (
                     <div
                       className={cn(
-                        "mb-6 flex aspect-[5/2] items-center justify-center rounded-xl bg-surface p-5",
+                        "relative mb-6 aspect-[5/2] w-full overflow-hidden rounded-xl bg-surface",
                         p.logoClassName,
                       )}
                     >
                       <img
                         src={p.logo}
                         alt={`Logo ${p.name}`}
-                        className="max-h-full max-w-full object-contain"
+                        className="absolute inset-0 h-full w-full object-contain p-6"
                         loading="lazy"
                       />
                     </div>

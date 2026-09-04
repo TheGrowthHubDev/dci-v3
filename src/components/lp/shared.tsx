@@ -425,31 +425,32 @@ export function ImagePlaceholder({
   );
 }
 
-export function Logo({ tone = "brand" }: { tone?: "brand" | "light" }) {
-  const isLight = tone === "light";
+/**
+ * Logo oficial horizontal do Discovery Centre International.
+ * `brand` = versao colorida (fundos claros); `light` = versao reversa
+ * (wordmark branco, circulo azul preservado) para fundos escuros.
+ * Proporcao do arquivo: 834x314 (~2.66:1).
+ */
+export function Logo({
+  tone = "brand",
+  className,
+}: {
+  tone?: "brand" | "light";
+  className?: string;
+}) {
+  const src =
+    tone === "light"
+      ? "/images/dci/logos/logo-dci-light.png"
+      : "/images/dci/logos/logo-dci-color.png";
   return (
-    <span className="flex items-center gap-3">
-      <span
-        className={cn(
-          "flex size-10 items-center justify-center rounded-md border font-display text-sm font-bold lowercase tracking-tight",
-          isLight
-            ? "border-white/40 bg-transparent text-white"
-            : "border-transparent bg-brand text-brand-foreground",
-        )}
-        aria-hidden="true"
-      >
-        dci
-      </span>
-      <span
-        className={cn(
-          "font-display text-[0.68rem] font-semibold uppercase leading-tight tracking-[0.16em]",
-          isLight ? "text-white" : "text-brand",
-        )}
-      >
-        Discovery Centre
-        <br />
-        International
-      </span>
-    </span>
+    <img
+      src={src}
+      alt="Discovery Centre International"
+      width={834}
+      height={314}
+      decoding="async"
+      className={cn("block h-11 w-auto select-none", className)}
+      draggable={false}
+    />
   );
 }

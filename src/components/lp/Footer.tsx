@@ -10,8 +10,10 @@ export function Footer() {
       <div className="relative mx-auto max-w-7xl px-5 lg:px-8">
         <div className="grid gap-12 lg:grid-cols-[1.4fr_0.8fr_1fr]">
           <div>
-            <Logo tone="light" />
-            <p className="mt-6 max-w-sm text-sm leading-relaxed text-brand-foreground/70">
+            <a href="#topo" aria-label="Discovery Centre International — início" className="inline-flex">
+              <Logo tone="light" className="h-14 lg:h-16" />
+            </a>
+            <p className="mt-7 max-w-sm text-sm leading-relaxed text-brand-foreground/70">
               Discovery Centre International | Uma expansão do Discovery Centre, Halifax, Canadá
             </p>
           </div>

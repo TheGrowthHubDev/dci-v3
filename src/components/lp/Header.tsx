@@ -61,8 +61,12 @@ export function Header() {
       )}
     >
       <div className="relative mx-auto flex h-20 max-w-7xl items-center justify-between gap-6 px-5 lg:px-8">
-        <a href="#topo" aria-label="Discovery Centre International — início" className="shrink-0">
-          <Logo tone="light" />
+        <a
+          href="#topo"
+          aria-label="Discovery Centre International — início"
+          className="flex shrink-0 items-center transition-opacity hover:opacity-90"
+        >
+          <Logo tone="light" className="h-10 sm:h-11 lg:h-12" />
         </a>
 
         <nav className="hidden items-center gap-8 lg:flex" aria-label="Navegação principal">

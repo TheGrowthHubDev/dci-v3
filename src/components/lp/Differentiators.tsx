@@ -96,8 +96,7 @@ const PARTNERS: Partner[] = [
   {
     name: "Governo do Canadá",
     text: "Sinal institucional de um ecossistema construído com participação pública, privada e comunitária ao longo da história do Discovery Centre.",
-    logo: "/images/dci/logos/governo-canada-logo.png",
-    logoClassName: "bg-white",
+    logo: "/images/dci/logos/governo-canada.png",
   },
 ];
 

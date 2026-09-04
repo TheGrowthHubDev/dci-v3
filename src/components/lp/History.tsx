@@ -46,8 +46,8 @@ const TIMELINE = [
 type Leader = {
   name: string;
   role: string;
-  /** Bio aprovada (opcional — membros sem texto aprovado exibem só nome/cargo). */
-  bio?: string;
+  /** Bio aprovada pelo cliente. */
+  bio: string;
   photo?: string;
 };
 
@@ -67,6 +67,7 @@ const LEADERS: Leader[] = [
   {
     name: "Ricardo Cancela",
     role: "Brazil Ambassador",
+    bio: "Representa o DCI no Brasil, reunindo mais de 36 anos de experiência em mercados globais, tecnologia, desenvolvimento de negócios e construção de redes de liderança.",
     photo: "/images/dci/team/ricardo-cancela.jpg",
   },
   {
@@ -90,16 +91,19 @@ const LEADERS: Leader[] = [
   {
     name: "Jennifer Punch",
     role: "Chief Operating Officer",
+    bio: "Integra o Discovery Centre desde 2016 e participou diretamente da abertura da atual unidade no waterfront de Halifax, atuando hoje na liderança operacional da instituição.",
     photo: "/images/dci/team/jennifer-punch.jpg",
   },
   {
     name: "Linda Laurence",
     role: "Director of Human Resources",
+    bio: "Responsável pela área de pessoas e pela estrutura de Recursos Humanos que sustenta a operação e as equipes do Discovery Centre.",
     photo: "/images/dci/team/linda-laurence.jpg",
   },
   {
     name: "Laura Jones",
     role: "Marketing Coordinator",
+    bio: "Atua na coordenação das iniciativas de marketing do Discovery Centre, apoiando a comunicação e a presença da instituição junto aos seus públicos.",
     photo: "/images/dci/team/laura-jones.jpg",
   },
 ];
@@ -248,11 +252,7 @@ function LeaderCard({ leader }: { leader: Leader }) {
 
       {/* Bio + contato */}
       <div className="flex flex-1 flex-col p-6">
-        {leader.bio ? (
-          <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>
-        ) : (
-          <span className="flex-1" aria-hidden="true" />
-        )}
+        <p className="flex-1 text-sm leading-relaxed text-muted-foreground">{leader.bio}</p>
         <a
           href={`mailto:${CONTACT_EMAIL}?subject=Contato%20-%20${encodeURIComponent(leader.name)}`}
           className="nav-underline mt-5 inline-flex w-fit items-center gap-2 text-sm font-bold text-brand"

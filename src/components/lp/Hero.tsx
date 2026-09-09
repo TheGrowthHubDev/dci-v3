@@ -52,9 +52,9 @@ function HeroBackdrop({ index }: { index: number }) {
         );
       })}
       {/* Véus: profundidade + legibilidade do texto */}
-      <div className="absolute inset-0 bg-gradient-to-r from-brand-deep/95 via-brand-deep/70 to-brand-deep/30" />
-      <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/20 to-brand-deep/40" />
-      <div className="absolute inset-0 mix-blend-multiply" style={{ background: "var(--brand-deep)", opacity: 0.25 }} />
+      <div className="absolute inset-0 bg-gradient-to-r from-brand-deep/85 via-brand-deep/55 to-brand-deep/20" />
+      <div className="absolute inset-0 bg-gradient-to-t from-brand-deep via-brand-deep/15 to-brand-deep/30" />
+      <div className="absolute inset-0 mix-blend-multiply" style={{ background: "var(--brand-deep)", opacity: 0.15 }} />
     </div>
   );
 }

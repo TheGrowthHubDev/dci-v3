@@ -302,8 +302,8 @@ export function History() {
               loading="lazy"
             />
             {/* Gradientes para legibilidade */}
-            <div className="absolute inset-0 bg-gradient-to-r from-brand-deep/95 via-brand-deep/80 to-brand-deep/25" />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/85 via-transparent to-transparent" />
+            <div className="absolute inset-0 bg-gradient-to-r from-brand-deep/85 via-brand-deep/65 to-brand-deep/15" />
+            <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/65 via-transparent to-transparent" />
 
             <div className="absolute inset-0 flex flex-col justify-between p-6 sm:p-10 lg:p-14">
               <div className="max-w-2xl">

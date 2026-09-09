@@ -89,12 +89,6 @@ const LEADERS: Leader[] = [
     photo: "/images/dci/team/helen-dolan.jpg",
   },
   {
-    name: "Jennifer Punch",
-    role: "Chief Operating Officer",
-    bio: "Integra o Discovery Centre desde 2016 e participou diretamente da abertura da atual unidade no waterfront de Halifax, atuando hoje na liderança operacional da instituição.",
-    photo: "/images/dci/team/jennifer-punch.jpg",
-  },
-  {
     name: "Linda Laurence",
     role: "Director of Human Resources",
     bio: "Responsável pela área de pessoas e pela estrutura de Recursos Humanos que sustenta a operação e as equipes do Discovery Centre.",
@@ -105,6 +99,24 @@ const LEADERS: Leader[] = [
     role: "Marketing Coordinator",
     bio: "Atua na coordenação das iniciativas de marketing do Discovery Centre, apoiando a comunicação e a presença da instituição junto aos seus públicos.",
     photo: "/images/dci/team/laura-jones.jpg",
+  },
+  {
+    name: "Valentina Gioia Levy",
+    role: "Italy Ambassador",
+    bio: "Com quase 15 anos de experiência em educação e programação cultural, atua na Itália como curadora e gestora de projetos, criando exposições e iniciativas voltadas à comunidade.",
+    photo: "/images/dci/team/valentina-gioia-levy.jpg",
+  },
+  {
+    name: "Diego del Carril",
+    role: "Argentina Ambassador",
+    bio: "Empreendedor com portfólio diversificado em tecnologia, engenharia e hospitalidade. Diretor administrativo e cofundador da First Light Latin America, apoia empresas que buscam se estabelecer e expandir na região.",
+    photo: "/images/dci/team/diego-del-carril.jpg",
+  },
+  {
+    name: "Juan Arabia",
+    role: "Colombia Ambassador",
+    bio: "Mais de 14 anos de experiência em energia e finanças, com atuação junto aos setores público e privado da Colômbia no desenvolvimento de projetos estratégicos de crescimento e sustentabilidade.",
+    photo: "/images/dci/team/juan-arabia.jpg",
   },
 ];
 

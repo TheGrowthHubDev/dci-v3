@@ -3,14 +3,17 @@ import { ArrowRight } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Reveal, SCHEDULE_URL, SectionNumber, SectionTag, WordReveal, useParallax } from "./shared";
 
-/** Seis momentos distintos de crianças no Discovery Centre (fotos reais). */
+/**
+ * Seis fotos reais do Discovery Centre, alternando crianças em ação e os espaços/galerias
+ * do centro — para comunicar tanto o engajamento quanto a amplitude física da experiência.
+ */
 const KIDS_PHOTOS: { src: string; position: string }[] = [
   { src: "/images/dci/brazil-kids-1.jpg", position: "65% 50%" },
-  { src: "/images/dci/brazil-kids-2.jpg", position: "70% 50%" },
+  { src: "/images/dci/brazil-space-1.jpg", position: "68% 45%" },
   { src: "/images/dci/brazil-kids-3.jpg", position: "50% 50%" },
-  { src: "/images/dci/brazil-kids-4.jpg", position: "60% 50%" },
-  { src: "/images/dci/brazil-kids-5.jpg", position: "45% 50%" },
+  { src: "/images/dci/brazil-space-2.jpg", position: "62% 45%" },
   { src: "/images/dci/brazil-kids-6.jpg", position: "50% 50%" },
+  { src: "/images/dci/brazil-space-3.jpg", position: "66% 45%" },
 ];
 
 const KIDS_SLIDE_MS = 4500;
@@ -31,7 +34,7 @@ function KidsRotator() {
     <div
       className="relative aspect-[4/5] w-full overflow-hidden sm:aspect-[4/3] lg:aspect-[4/5]"
       role="img"
-      aria-label="Crianças explorando experiências científicas no Discovery Centre"
+      aria-label="Crianças explorando experiências científicas e espaços do Discovery Centre"
     >
       {KIDS_PHOTOS.map((photo, i) => {
         const isActive = i === index;

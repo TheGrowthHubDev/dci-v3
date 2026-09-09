@@ -552,7 +552,7 @@ export function Differentiators() {
           <Reveal variant="fade" className="text-center">
             <h3 className="eyebrow justify-center text-brand-grey">
               <span className="h-px w-8 bg-brand-teal" aria-hidden="true" />
-              Ecossistema de apoio em Halifax
+              ECOSSISTEMA DE APOIO
               <span className="h-px w-8 bg-brand-teal" aria-hidden="true" />
             </h3>
           </Reveal>

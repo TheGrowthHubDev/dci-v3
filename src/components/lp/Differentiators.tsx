@@ -465,8 +465,8 @@ export function Differentiators() {
             />
           </div>
           {/* Overlay mais leve à direita para deixar a fachada visível; texto fica sobre a faixa escura à esquerda */}
-          <div className="absolute inset-0 bg-gradient-to-r from-brand-deep via-brand-deep/75 to-brand-deep/10" />
-          <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/85 via-transparent to-brand-deep/20" />
+          <div className="absolute inset-0 bg-gradient-to-r from-brand-deep via-brand-deep/55 to-brand-deep/5" />
+          <div className="absolute inset-0 bg-gradient-to-t from-brand-deep/65 via-transparent to-brand-deep/10" />
 
           <div className="relative mx-auto flex min-h-[560px] max-w-7xl flex-col justify-center px-5 py-20 lg:min-h-[680px] lg:px-8">
             <div className="max-w-2xl">

@@ -1,5 +1,5 @@
-import { useState, type FormEvent } from "react";
-import { ArrowRight, CheckCircle2, Mail, MapPin } from "lucide-react";
+import { Link } from "@tanstack/react-router";
+import { ArrowRight, Mail, MapPin } from "lucide-react";
 import { ADDRESS, BrandOrbit, CONTACT_EMAIL, Reveal, SCHEDULE_URL, SectionTag, WordReveal } from "./shared";
 
 const PROFILES = [

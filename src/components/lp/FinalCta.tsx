@@ -2,32 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
 import { ADDRESS, BrandOrbit, CONTACT_EMAIL, Reveal, SCHEDULE_URL, SectionTag, WordReveal } from "./shared";
 
-const PROFILES = [
-  "Operador / empreendedor",
-  "Financiador / filantropo / family office",
-  "Governo / instituição pública",
-  "Empresa / fundação / parceiro institucional",
-  "Outro",
-];
-
-const FIELD_CLASS =
-  "mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-sm text-white outline-none transition-all placeholder:text-white/40 focus:border-brand-light focus:bg-white/10 focus:ring-4 focus:ring-brand-light/20";
-
 export function FinalCta() {
-  const [sent, setSent] = useState(false);
-  const [form, setForm] = useState({ name: "", email: "", profile: "" });
-  const [error, setError] = useState<string | null>(null);
-
-  function handleSubmit(e: FormEvent) {
-    e.preventDefault();
-    if (!form.name.trim() || !form.email.trim() || !form.profile) {
-      setError("Preencha todos os campos para continuar.");
-      return;
-    }
-    setError(null);
-    setSent(true);
-  }
-
   return (
     <section
       id="fale-conosco"

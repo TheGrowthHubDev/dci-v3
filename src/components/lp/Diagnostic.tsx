@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { sendDiagnosticLead } from "@/lib/lead.functions";
+import { captureTracking, EMPTY_TRACKING, type Tracking } from "@/lib/tracking";
 import { ArrowLeft, ArrowRight, Check, Mail, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo, SCHEDULE_URL, SectionTag } from "./shared";

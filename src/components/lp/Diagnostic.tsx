@@ -1,5 +1,8 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
+import { sendDiagnosticLead } from "@/lib/lead.functions";
+import { captureTracking, EMPTY_TRACKING, type Tracking } from "@/lib/tracking";
 import { ArrowLeft, ArrowRight, Check, Mail, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { Logo, SCHEDULE_URL, SectionTag } from "./shared";
@@ -95,6 +98,73 @@ export function Diagnostic() {
   const [answers, setAnswers] = useState<Answers>(EMPTY_ANSWERS);
   const [error, setError] = useState<string | null>(null);
   const [emailed, setEmailed] = useState(false);
+  const [tracking, setTracking] = useState<Tracking>(EMPTY_TRACKING);
+  const sessionId = useRef<string>("");
+  const startedAt = useRef<string>("");
+  const submitLead = useServerFn(sendDiagnosticLead);
+
+  useEffect(() => {
+    setTracking(captureTracking());
+    if (!sessionId.current) {
+      sessionId.current =
+        typeof crypto !== "undefined" && "randomUUID" in crypto
+          ? crypto.randomUUID()
+          : `dci-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+      startedAt.current = new Date().toISOString();
+    }
+  }, []);
+
+  /** Monta o payload completo enviado ao webhook. */
+  function buildPayload(event: "lead_capturado" | "diagnostico_concluido", a: Answers) {
+    const stage = getStageResult(a);
+    const themes = getTopThemes(a);
+    const gaps = getGaps(a);
+    return {
+      event,
+      form: "diagnostico_dci",
+      session_id: sessionId.current,
+      started_at: startedAt.current,
+      submitted_at: new Date().toISOString(),
+      page_url: typeof window !== "undefined" ? window.location.href : "",
+      contato: {
+        nome: a.name,
+        organizacao: a.organization,
+        cargo: a.role,
+        email: a.email,
+        telefone: a.phone,
+      },
+      respostas: {
+        perfil_organizacao: a.organization_profile,
+        objetivo_principal: a.primary_objective,
+        localizacao: {
+          cidade: a.location_city,
+          estado: a.location_state,
+          pais: a.location_country,
+          estagio: a.location_stage,
+        },
+        estagio_oportunidade: a.opportunity_stage,
+        ativos_existentes: a.existing_assets,
+        prioridades_sucesso: a.success_priorities,
+      },
+      diagnostico:
+        event === "diagnostico_concluido"
+          ? {
+              estagio_titulo: stage.title,
+              estagio_texto: stage.text,
+              temas: themes.map((t) => ({ chave: t, titulo: THEMES[t].title })),
+              pontos_a_aprofundar: gaps.map((g) => ({ titulo: g.title, texto: g.text })),
+            }
+          : null,
+      tracking: {
+        ...tracking,
+        user_agent: typeof navigator !== "undefined" ? navigator.userAgent : "",
+      },
+    };
+  }
+
+  function sendToWebhook(event: "lead_capturado" | "diagnostico_concluido", a: Answers) {
+    void submitLead({ data: buildPayload(event, a) }).catch(() => undefined);
+  }
 
   const index = STEPS.indexOf(step);
   const progress = Math.round((index / (STEPS.length - 1)) * 100);
@@ -570,15 +640,15 @@ export function Diagnostic() {
                     "Informe ao menos cidade, país e o estágio da localização.",
                     "lead",
                   );
-                if (step === "lead")
-                  return requireValue(
+                if (step === "lead") {
+                  const ok =
                     !!answers.name.trim() &&
-                      !!answers.organization.trim() &&
-                      !!answers.role.trim() &&
-                      /\S+@\S+\.\S+/.test(answers.email),
-                    "Preencha nome, organização, cargo e um e-mail válido.",
-                    "q4",
-                  );
+                    !!answers.organization.trim() &&
+                    !!answers.role.trim() &&
+                    /\S+@\S+\.\S+/.test(answers.email);
+                  if (ok) sendToWebhook("lead_capturado", answers);
+                  return requireValue(ok, "Preencha nome, organização, cargo e um e-mail válido.", "q4");
+                }
                 if (step === "q4")
                   return requireValue(!!answers.opportunity_stage, "Escolha uma opção para continuar.", "q5");
                 if (step === "q5")
@@ -587,12 +657,11 @@ export function Diagnostic() {
                     "Selecione ao menos uma opção para continuar.",
                     "q6",
                   );
-                if (step === "q6")
-                  return requireValue(
-                    answers.success_priorities.length > 0,
-                    "Selecione ao menos um resultado para continuar.",
-                    "result",
-                  );
+                if (step === "q6") {
+                  const ok = answers.success_priorities.length > 0;
+                  if (ok) sendToWebhook("diagnostico_concluido", answers);
+                  return requireValue(ok, "Selecione ao menos um resultado para continuar.", "result");
+                }
               }}
               className="btn-shine group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-light to-brand-teal px-8 py-4 text-sm font-bold text-brand-deep"
             >

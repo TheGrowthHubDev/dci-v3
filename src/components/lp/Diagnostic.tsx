@@ -657,12 +657,11 @@ export function Diagnostic() {
                     "Selecione ao menos uma opção para continuar.",
                     "q6",
                   );
-                if (step === "q6")
-                  return requireValue(
-                    answers.success_priorities.length > 0,
-                    "Selecione ao menos um resultado para continuar.",
-                    "result",
-                  );
+                if (step === "q6") {
+                  const ok = answers.success_priorities.length > 0;
+                  if (ok) sendToWebhook("diagnostico_concluido", answers);
+                  return requireValue(ok, "Selecione ao menos um resultado para continuar.", "result");
+                }
               }}
               className="btn-shine group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-light to-brand-teal px-8 py-4 text-sm font-bold text-brand-deep"
             >

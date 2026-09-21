@@ -640,15 +640,15 @@ export function Diagnostic() {
                     "Informe ao menos cidade, país e o estágio da localização.",
                     "lead",
                   );
-                if (step === "lead")
-                  return requireValue(
+                if (step === "lead") {
+                  const ok =
                     !!answers.name.trim() &&
-                      !!answers.organization.trim() &&
-                      !!answers.role.trim() &&
-                      /\S+@\S+\.\S+/.test(answers.email),
-                    "Preencha nome, organização, cargo e um e-mail válido.",
-                    "q4",
-                  );
+                    !!answers.organization.trim() &&
+                    !!answers.role.trim() &&
+                    /\S+@\S+\.\S+/.test(answers.email);
+                  if (ok) sendToWebhook("lead_capturado", answers);
+                  return requireValue(ok, "Preencha nome, organização, cargo e um e-mail válido.", "q4");
+                }
                 if (step === "q4")
                   return requireValue(!!answers.opportunity_stage, "Escolha uma opção para continuar.", "q5");
                 if (step === "q5")

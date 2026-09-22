@@ -114,11 +114,12 @@ export function Diagnostic() {
     }
   }, []);
 
-  /** Monta o payload completo enviado ao webhook. */
+  /** Monta o payload enviado ao webhook: tudo "achatado" em colunas, uma por campo. */
   function buildPayload(event: "lead_capturado" | "diagnostico_concluido", a: Answers) {
     const stage = getStageResult(a);
     const themes = getTopThemes(a);
     const gaps = getGaps(a);
+    const done = event === "diagnostico_concluido";
     return {
       event,
       form: "diagnostico_dci",
@@ -126,39 +127,46 @@ export function Diagnostic() {
       started_at: startedAt.current,
       submitted_at: new Date().toISOString(),
       page_url: typeof window !== "undefined" ? window.location.href : "",
-      contato: {
-        nome: a.name,
-        organizacao: a.organization,
-        cargo: a.role,
-        email: a.email,
-        telefone: a.phone,
-      },
-      respostas: {
-        perfil_organizacao: a.organization_profile,
-        objetivo_principal: a.primary_objective,
-        localizacao: {
-          cidade: a.location_city,
-          estado: a.location_state,
-          pais: a.location_country,
-          estagio: a.location_stage,
-        },
-        estagio_oportunidade: a.opportunity_stage,
-        ativos_existentes: a.existing_assets,
-        prioridades_sucesso: a.success_priorities,
-      },
-      diagnostico:
-        event === "diagnostico_concluido"
-          ? {
-              estagio_titulo: stage.title,
-              estagio_texto: stage.text,
-              temas: themes.map((t) => ({ chave: t, titulo: THEMES[t].title })),
-              pontos_a_aprofundar: gaps.map((g) => ({ titulo: g.title, texto: g.text })),
-            }
-          : null,
-      tracking: {
-        ...tracking,
-        user_agent: typeof navigator !== "undefined" ? navigator.userAgent : "",
-      },
+
+      // Contato
+      contato_nome: a.name,
+      contato_organizacao: a.organization,
+      contato_cargo: a.role,
+      contato_email: a.email,
+      contato_telefone: a.phone,
+
+      // Respostas do questionário (uma coluna por pergunta)
+      resposta_perfil_organizacao: a.organization_profile,
+      resposta_objetivo_principal: a.primary_objective,
+      resposta_cidade: a.location_city,
+      resposta_estado: a.location_state,
+      resposta_pais: a.location_country,
+      resposta_local_definido: a.location_stage,
+      resposta_estagio_oportunidade: a.opportunity_stage,
+      resposta_ativos_existentes: a.existing_assets.join("; "),
+      resposta_prioridades_sucesso: a.success_priorities.join("; "),
+
+      // Resultado interno do diagnóstico (só preenchido no disparo final)
+      diagnostico_estagio_titulo: done ? stage.title : "",
+      diagnostico_estagio_texto: done ? stage.text : "",
+      diagnostico_tema_1: done ? (THEMES[themes[0]!]?.title ?? "") : "",
+      diagnostico_tema_2: done ? (THEMES[themes[1]!]?.title ?? "") : "",
+      diagnostico_ponto_1: done ? (gaps[0]?.title ?? "") : "",
+      diagnostico_ponto_2: done ? (gaps[1]?.title ?? "") : "",
+      diagnostico_ponto_3: done ? (gaps[2]?.title ?? "") : "",
+
+      // Tracking / UTMs
+      utm_source: tracking.utm_source,
+      utm_medium: tracking.utm_medium,
+      utm_campaign: tracking.utm_campaign,
+      utm_term: tracking.utm_term,
+      utm_content: tracking.utm_content,
+      utm_id: tracking.utm_id,
+      gclid: tracking.gclid,
+      fbclid: tracking.fbclid,
+      referrer: tracking.referrer,
+      landing_page: tracking.landing_page,
+      user_agent: typeof navigator !== "undefined" ? navigator.userAgent : "",
     };
   }
 

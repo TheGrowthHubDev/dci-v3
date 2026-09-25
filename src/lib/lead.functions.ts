@@ -10,7 +10,6 @@ const SPREADSHEET_ID = "1smWnkgKcCiVhlRxZFIoPwNGDvg58xtYqkVuZ7C6bJI8";
 const SHEET = "Página1";
 
 const str = (v: unknown) => (typeof v === "string" ? v.trim() : "");
-const norm = (v: unknown) => str(v).toLowerCase();
 
 function device(ua: string) {
   if (/ipad|tablet/i.test(ua)) return "Tablet";

@@ -1,5 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
+import { ScheduleForm } from "./ScheduleForm";
 import { ADDRESS, BrandOrbit, CONTACT_EMAIL, Reveal, SectionTag, WordReveal } from "./shared";
 
 export function FinalCta() {
@@ -37,29 +38,16 @@ export function FinalCta() {
         <div className="mt-16 grid gap-6 lg:grid-cols-[0.9fr_1.1fr] lg:gap-8">
           {/* Contato direto */}
           <Reveal variant="left">
-            <div className="glass flex h-full flex-col rounded-[2rem] p-8 lg:p-12">
-              <h3 className="font-display text-3xl font-extrabold tracking-tight lg:text-4xl">
-                Já sabe que faz sentido conversar?
-              </h3>
-              <p className="mt-5 text-base leading-relaxed text-white/80 lg:text-lg">
-                Fale diretamente com o time do Discovery Centre International sobre contexto,
-                objetivos e aderência ao modelo.
-              </p>
-              <div className="mt-10 space-y-5 text-sm">
-                <a
-                  href={`mailto:${CONTACT_EMAIL}`}
-                  className="group flex items-center gap-4 font-semibold"
-                >
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-brand-light transition-colors group-hover:bg-brand-light group-hover:text-brand-deep">
-                    <Mail className="size-5" aria-hidden="true" />
-                  </span>
-                  <span className="nav-underline text-base">{CONTACT_EMAIL}</span>
+            <div id="agendar" className="glass h-full scroll-mt-28 rounded-[2rem] p-8 lg:p-12">
+              <ScheduleForm />
+              <div className="mt-10 space-y-3 border-t border-white/10 pt-6 text-sm text-white/75">
+                <a href={`mailto:${CONTACT_EMAIL}`} className="flex items-center gap-3 font-semibold">
+                  <Mail className="size-4 text-brand-light" aria-hidden="true" />
+                  <span className="nav-underline">{CONTACT_EMAIL}</span>
                 </a>
-                <p className="flex items-center gap-4 text-white/80">
-                  <span className="flex size-11 shrink-0 items-center justify-center rounded-full bg-white/10 text-brand-light">
-                    <MapPin className="size-5" aria-hidden="true" />
-                  </span>
-                  <span className="text-base">{ADDRESS}</span>
+                <p className="flex items-center gap-3">
+                  <MapPin className="size-4 shrink-0 text-brand-light" aria-hidden="true" />
+                  {ADDRESS}
                 </p>
               </div>
             </div>

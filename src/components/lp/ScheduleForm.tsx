@@ -28,7 +28,7 @@ function maskPhone(value: string) {
 export function ScheduleForm() {
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState<string | null>(null);
-  const [invalid, setInvalid] = useState<Record<string, boolean>>({});
+  const [invalid, setInvalid] = useState<Partial<Record<"name" | "organization" | "role" | "email", boolean>>>({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [tracking, setTracking] = useState<Tracking>(EMPTY_TRACKING);

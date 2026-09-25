@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
  * Configurações pendentes de validação com o cliente.
  * Substituir pelos links oficiais quando disponíveis.
  */
-export const SCHEDULE_URL = "mailto:info@dcinternational.ca?subject=Agendar%20uma%20Conversa";
+export const SCHEDULE_URL = "/#agendar";
 export const TOUR_URL =
   "https://my.matterport.com/models/3pmrByNdcc4?cta_origin=all_spaces_page&section=media";
 export const TOUR_EMBED_URL = "https://my.matterport.com/show/?m=3pmrByNdcc4";

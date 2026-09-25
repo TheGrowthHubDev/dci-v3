@@ -41,11 +41,21 @@ async function syncSheet(data: Record<string, unknown>) {
   if (!nome && !empresa) return;
   const quizDone = event === "diagnostico_concluido";
 
+  // Data de cadastro no horário de Brasília (dd/mm/aaaa hh:mm)
+  const cadastro = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date());
+
   // Procura a linha existente do lead (mesmo nome + empresa), da mais recente para a mais antiga
   // Se a leitura falhar (ex.: limite temporário do Google), segue e grava uma linha nova
   let rows: string[][] = [];
   try {
-    const current = (await sheetsFetch(`/values/${SHEET}!A:M`)) as { values?: string[][] };
+    const current = (await sheetsFetch(`/values/${SHEET}!A:O`)) as { values?: string[][] };
     rows = current.values ?? [];
   } catch (err) {
     console.error("[sheets] falha ao ler planilha", err);
@@ -53,7 +63,7 @@ async function syncSheet(data: Record<string, unknown>) {
   let rowNumber = 0;
   for (let i = rows.length - 1; i >= 1; i--) {
     const r = rows[i] ?? [];
-    if (norm(r[0]) === norm(empresa) && norm(r[1]) === norm(nome)) {
+    if (norm(r[1]) === norm(empresa) && norm(r[2]) === norm(nome)) {
       rowNumber = i + 1;
       break;
     }
@@ -61,7 +71,7 @@ async function syncSheet(data: Record<string, unknown>) {
 
   if (rowNumber) {
     if (quizDone) {
-      await sheetsFetch(`/values/${SHEET}!M${rowNumber}?valueInputOption=USER_ENTERED`, {
+      await sheetsFetch(`/values/${SHEET}!O${rowNumber}?valueInputOption=USER_ENTERED`, {
         method: "PUT",
         body: JSON.stringify({ values: [["sim"]] }),
       });
@@ -69,11 +79,15 @@ async function syncSheet(data: Record<string, unknown>) {
     return;
   }
 
+  // Ordem das colunas: data, empresa, nome, cargo, telefone, email, utm_campaign,
+  // utm_term, utm_source, utm_content, utm_medium, dispositivo, fbclid, gclid, preencheu quiz?
   const row = [
+    cadastro,
     empresa,
     nome,
     str(data["contato_cargo"]),
     str(data["contato_telefone"]),
+    str(data["contato_email"]),
     str(data["utm_campaign"]),
     str(data["utm_term"]),
     str(data["utm_source"]),
@@ -84,7 +98,7 @@ async function syncSheet(data: Record<string, unknown>) {
     str(data["gclid"]),
     quizDone ? "sim" : "não",
   ];
-  await sheetsFetch(`/values/${SHEET}!A:M:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
+  await sheetsFetch(`/values/${SHEET}!A:O:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
     method: "POST",
     body: JSON.stringify({ values: [row] }),
   });

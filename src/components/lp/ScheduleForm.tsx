@@ -28,7 +28,7 @@ function maskPhone(value: string) {
 export function ScheduleForm() {
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState<string | null>(null);
-  const [invalid, setInvalid] = useState<Partial<Record<"name" | "organization" | "role" | "email", boolean>>>({});
+  const [invalid, setInvalid] = useState<Partial<Record<"name" | "organization" | "role" | "email" | "phone", boolean>>>({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [tracking, setTracking] = useState<Tracking>(EMPTY_TRACKING);
@@ -47,7 +47,7 @@ export function ScheduleForm() {
 
   const set = (k: keyof typeof EMPTY, v: string) => setForm((f) => ({ ...f, [k]: v.slice(0, 200) }));
 
-  const clearError = (k: "name" | "organization" | "role" | "email") => setInvalid((s) => (s[k] ? { ...s, [k]: false } : s));
+  const clearError = (k: "name" | "organization" | "role" | "email" | "phone") => setInvalid((s) => (s[k] ? { ...s, [k]: false } : s));
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -63,13 +63,16 @@ export function ScheduleForm() {
       organization: !f.organization,
       role: !f.role,
       email: !EMAIL_RE.test(f.email),
+      phone: f.phone.replace(/\D/g, "").length < 10,
     };
     setInvalid(errors);
-    if (errors.name || errors.organization || errors.role || errors.email) {
+    if (errors.name || errors.organization || errors.role || errors.email || errors.phone) {
       setError(
         errors.email && f.email
           ? "Informe um e-mail válido, ex.: nome@empresa.com."
-          : "Preencha nome, organização e cargo, e informe um e-mail válido.",
+          : errors.phone && f.phone
+            ? "Informe um telefone válido com DDD, ex.: (11) 91234-5678."
+            : "Preencha todos os campos, incluindo um e-mail e telefone válidos.",
       );
       return;
     }
@@ -197,7 +200,7 @@ export function ScheduleForm() {
         </div>
         <div className="sm:col-span-2">
           <label htmlFor="ag-tel" className="text-sm font-semibold text-white/90">
-            WhatsApp / telefone <span className="font-normal text-white/50">(opcional)</span>
+            WhatsApp / telefone
           </label>
           <input
             id="ag-tel"
@@ -205,9 +208,12 @@ export function ScheduleForm() {
             inputMode="numeric"
             autoComplete="tel"
             placeholder="(11) 91234-5678"
-            className={FIELD}
+            className={cn(FIELD, invalid.phone && FIELD_INVALID)}
             value={form.phone}
-            onChange={(e) => set("phone", maskPhone(e.target.value))}
+            onChange={(e) => {
+              set("phone", maskPhone(e.target.value));
+              clearError("phone");
+            }}
           />
         </div>
       </div>

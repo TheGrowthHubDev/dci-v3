@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-router";
+import { SCHEDULE_URL } from "./shared";
 import { ArrowRight, Award, Building2, Landmark, Users, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandOrbit, Reveal, SectionNumber, SectionTag, useMouseGlow } from "./shared";

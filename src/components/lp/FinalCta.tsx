@@ -62,13 +62,6 @@ export function FinalCta() {
                   <span className="text-base">{ADDRESS}</span>
                 </p>
               </div>
-              <a
-                href={SCHEDULE_URL}
-                className="btn-shine group mt-12 inline-flex w-fit items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold text-brand"
-              >
-                Agendar uma Conversa{" "}
-                <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-              </a>
             </div>
           </Reveal>
 

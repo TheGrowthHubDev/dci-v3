@@ -266,13 +266,13 @@ export function Audience() {
                   sentido avaliar na sua região.
                 </p>
               </div>
-              <Link
-                to="/diagnostico"
+              <a
+                href={SCHEDULE_URL}
                 className="btn-shine group inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold text-brand"
               >
-                Fazer diagnóstico
+                Agendar uma Conversa
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-              </Link>
+              </a>
             </div>
           </div>
         </Reveal>

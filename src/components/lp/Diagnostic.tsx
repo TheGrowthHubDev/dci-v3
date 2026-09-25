@@ -5,7 +5,7 @@ import { sendDiagnosticLead } from "@/lib/lead.functions";
 import { captureTracking, EMPTY_TRACKING, type Tracking } from "@/lib/tracking";
 import { ArrowLeft, ArrowRight, Check, Mail, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Logo, SCHEDULE_URL, SectionTag } from "./shared";
+import { Logo, SectionTag } from "./shared";
 import {
   EMPTY_ANSWERS,
   EXISTING_ASSETS,
@@ -523,14 +523,7 @@ export function Diagnostic() {
                 viabilidade do projeto. Esses pontos dependem de uma análise mais detalhada com o time
                 DCI.
               </p>
-              <div className="mt-8 flex flex-wrap items-center gap-4">
-                <a
-                  href={SCHEDULE_URL}
-                  className="btn-shine group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-light to-brand-teal px-7 py-4 text-sm font-bold text-brand-deep"
-                >
-                  Conversar com o DCI sobre meu projeto
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-                </a>
+              <div className="mt-8">
                 <button
                   type="button"
                   onClick={() => setEmailed(true)}

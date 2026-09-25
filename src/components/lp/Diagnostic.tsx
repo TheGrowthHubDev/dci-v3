@@ -25,7 +25,7 @@ import {
 const FIELD =
   "mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3.5 text-sm text-white outline-none transition-all placeholder:text-white/40 focus:border-brand-light focus:bg-white/10 focus:ring-4 focus:ring-brand-light/20";
 
-const STEPS = ["cover", "q1", "q2", "q3", "lead", "q4", "q5", "q6", "result"] as const;
+const STEPS = ["cover", "q1", "q2", "q3", "q4", "q5", "q6", "result"] as const;
 type Step = (typeof STEPS)[number];
 
 function OptionButton({
@@ -99,27 +99,36 @@ export function Diagnostic() {
   const [error, setError] = useState<string | null>(null);
   const [emailed, setEmailed] = useState(false);
   const [tracking, setTracking] = useState<Tracking>(EMPTY_TRACKING);
+  const [contact, setContact] = useState({ name: "", organization: "", role: "", email: "", phone: "" });
   const sessionId = useRef<string>("");
   const startedAt = useRef<string>("");
   const submitLead = useServerFn(sendDiagnosticLead);
 
   useEffect(() => {
     setTracking(captureTracking());
+    // Contato capturado no formulário de agendamento no início da jornada
+    try {
+      const raw = window.sessionStorage.getItem("dci_lead_contact");
+      if (raw) setContact(JSON.parse(raw) as typeof contact);
+    } catch {
+      /* sem contato salvo: o quiz segue sem dados de contato */
+    }
     if (!sessionId.current) {
+      const saved = window.sessionStorage.getItem("dci_lead_session");
       sessionId.current =
-        typeof crypto !== "undefined" && "randomUUID" in crypto
+        saved ||
+        (typeof crypto !== "undefined" && "randomUUID" in crypto
           ? crypto.randomUUID()
-          : `dci-${Date.now()}-${Math.random().toString(16).slice(2)}`;
+          : `dci-${Date.now()}-${Math.random().toString(16).slice(2)}`);
       startedAt.current = new Date().toISOString();
     }
   }, []);
 
   /** Monta o payload enviado ao webhook: tudo "achatado" em colunas, uma por campo. */
-  function buildPayload(event: "lead_capturado" | "diagnostico_concluido", a: Answers) {
+  function buildPayload(event: "diagnostico_concluido", a: Answers) {
     const stage = getStageResult(a);
     const themes = getTopThemes(a);
     const gaps = getGaps(a);
-    const done = event === "diagnostico_concluido";
     return {
       event,
       form: "diagnostico_dci",
@@ -128,12 +137,12 @@ export function Diagnostic() {
       submitted_at: new Date().toISOString(),
       page_url: typeof window !== "undefined" ? window.location.href : "",
 
-      // Contato
-      contato_nome: a.name,
-      contato_organizacao: a.organization,
-      contato_cargo: a.role,
-      contato_email: a.email,
-      contato_telefone: a.phone,
+      // Contato (capturado no formulário de agendamento)
+      contato_nome: contact.name,
+      contato_organizacao: contact.organization,
+      contato_cargo: contact.role,
+      contato_email: contact.email,
+      contato_telefone: contact.phone,
 
       // Respostas do questionário (uma coluna por pergunta)
       resposta_perfil_organizacao: a.organization_profile,

@@ -10,11 +10,6 @@ export type Answers = {
   location_state: string;
   location_country: string;
   location_stage: string;
-  name: string;
-  organization: string;
-  role: string;
-  email: string;
-  phone: string;
   opportunity_stage: string;
   existing_assets: string[];
   success_priorities: string[];
@@ -27,11 +22,6 @@ export const EMPTY_ANSWERS: Answers = {
   location_state: "",
   location_country: "",
   location_stage: "",
-  name: "",
-  organization: "",
-  role: "",
-  email: "",
-  phone: "",
   opportunity_stage: "",
   existing_assets: [],
   success_priorities: [],

@@ -155,14 +155,14 @@ export function Diagnostic() {
       resposta_ativos_existentes: a.existing_assets.join("; "),
       resposta_prioridades_sucesso: a.success_priorities.join("; "),
 
-      // Resultado interno do diagnóstico (só preenchido no disparo final)
-      diagnostico_estagio_titulo: done ? stage.title : "",
-      diagnostico_estagio_texto: done ? stage.text : "",
-      diagnostico_tema_1: done ? (THEMES[themes[0]!]?.title ?? "") : "",
-      diagnostico_tema_2: done ? (THEMES[themes[1]!]?.title ?? "") : "",
-      diagnostico_ponto_1: done ? (gaps[0]?.title ?? "") : "",
-      diagnostico_ponto_2: done ? (gaps[1]?.title ?? "") : "",
-      diagnostico_ponto_3: done ? (gaps[2]?.title ?? "") : "",
+      // Resultado interno do diagnóstico
+      diagnostico_estagio_titulo: stage.title,
+      diagnostico_estagio_texto: stage.text,
+      diagnostico_tema_1: THEMES[themes[0]!]?.title ?? "",
+      diagnostico_tema_2: THEMES[themes[1]!]?.title ?? "",
+      diagnostico_ponto_1: gaps[0]?.title ?? "",
+      diagnostico_ponto_2: gaps[1]?.title ?? "",
+      diagnostico_ponto_3: gaps[2]?.title ?? "",
 
       // Tracking / UTMs
       utm_source: tracking.utm_source,
@@ -179,7 +179,7 @@ export function Diagnostic() {
     };
   }
 
-  function sendToWebhook(event: "lead_capturado" | "diagnostico_concluido", a: Answers) {
+  function sendToWebhook(event: "diagnostico_concluido", a: Answers) {
     void submitLead({ data: buildPayload(event, a) }).catch(() => undefined);
   }
 
@@ -236,8 +236,7 @@ export function Diagnostic() {
     q1: "cover",
     q2: "q1",
     q3: "q2",
-    lead: "q3",
-    q4: "lead",
+    q4: "q3",
     q5: "q4",
     q6: "q5",
   };
@@ -408,83 +407,6 @@ export function Diagnostic() {
           </StepShell>
         )}
 
-        {/* CAPTURA */}
-        {step === "lead" && (
-          <StepShell
-            tag="Seu diagnóstico já começou a tomar forma"
-            title="Conte um pouco sobre quem está avaliando essa ideia."
-            hint="Isso ajuda a deixar a leitura final mais adequada ao seu contexto."
-          >
-            <div className="glass rounded-3xl p-6 sm:p-8">
-              <div className="grid gap-5 sm:grid-cols-2">
-                <div>
-                  <label htmlFor="nome" className="text-sm font-semibold text-white/90">
-                    Nome
-                  </label>
-                  <input
-                    id="nome"
-                    autoComplete="name"
-                    className={FIELD}
-                    value={answers.name}
-                    onChange={(e) => set("name", e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="org" className="text-sm font-semibold text-white/90">
-                    Organização / Grupo / Família
-                  </label>
-                  <input
-                    id="org"
-                    autoComplete="organization"
-                    className={FIELD}
-                    value={answers.organization}
-                    onChange={(e) => set("organization", e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="cargo" className="text-sm font-semibold text-white/90">
-                    Cargo ou função
-                  </label>
-                  <input
-                    id="cargo"
-                    autoComplete="organization-title"
-                    className={FIELD}
-                    value={answers.role}
-                    onChange={(e) => set("role", e.target.value)}
-                  />
-                </div>
-                <div>
-                  <label htmlFor="email" className="text-sm font-semibold text-white/90">
-                    E-mail corporativo
-                  </label>
-                  <input
-                    id="email"
-                    type="email"
-                    autoComplete="email"
-                    className={FIELD}
-                    value={answers.email}
-                    onChange={(e) => set("email", e.target.value)}
-                  />
-                </div>
-                <div className="sm:col-span-2">
-                  <label htmlFor="tel" className="text-sm font-semibold text-white/90">
-                    WhatsApp / telefone <span className="font-normal text-white/50">(opcional)</span>
-                  </label>
-                  <input
-                    id="tel"
-                    type="tel"
-                    autoComplete="tel"
-                    className={FIELD}
-                    value={answers.phone}
-                    onChange={(e) => set("phone", e.target.value)}
-                  />
-                </div>
-              </div>
-              <p className="mt-6 text-xs font-semibold text-white/55">Você já está na metade.</p>
-            </div>
-          </StepShell>
-        )}
-
         {/* Q4 */}
         {step === "q4" && (
           <StepShell tag="Em que ponto essa ideia está" title="Em que ponto essa ideia está hoje?">
@@ -621,7 +543,7 @@ export function Diagnostic() {
               {emailed && (
                 <p className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-teal/20 px-4 py-3 text-sm font-semibold text-white">
                   <Sparkles className="size-4" aria-hidden="true" />
-                  Anotado! Enviaremos o diagnóstico para {answers.email || "o seu e-mail"}.
+                  Anotado! Enviaremos o diagnóstico para {contact.email || "o seu e-mail"}.
                 </p>
               )}
             </section>
@@ -655,17 +577,8 @@ export function Diagnostic() {
                   return requireValue(
                     !!answers.location_city.trim() && !!answers.location_country.trim() && !!answers.location_stage,
                     "Informe ao menos cidade, país e o estágio da localização.",
-                    "lead",
+                    "q4",
                   );
-                if (step === "lead") {
-                  const ok =
-                    !!answers.name.trim() &&
-                    !!answers.organization.trim() &&
-                    !!answers.role.trim() &&
-                    /\S+@\S+\.\S+/.test(answers.email);
-                  if (ok) sendToWebhook("lead_capturado", answers);
-                  return requireValue(ok, "Preencha nome, organização, cargo e um e-mail válido.", "q4");
-                }
                 if (step === "q4")
                   return requireValue(!!answers.opportunity_stage, "Escolha uma opção para continuar.", "q5");
                 if (step === "q5")
@@ -682,7 +595,7 @@ export function Diagnostic() {
               }}
               className="btn-shine group inline-flex items-center gap-2 rounded-full bg-gradient-to-r from-brand-light to-brand-teal px-8 py-4 text-sm font-bold text-brand-deep"
             >
-              {step === "lead" ? "Continuar" : step === "q6" ? "Ver meu diagnóstico" : "Continuar"}
+              {step === "q6" ? "Ver meu diagnóstico" : "Continuar"}
               <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
             </button>
           </div>

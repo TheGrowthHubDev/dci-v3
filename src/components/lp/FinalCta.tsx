@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
-import { ADDRESS, BrandOrbit, CONTACT_EMAIL, Reveal, SCHEDULE_URL, SectionTag, WordReveal } from "./shared";
+import { ADDRESS, BrandOrbit, CONTACT_EMAIL, Reveal, SectionTag, WordReveal } from "./shared";
 
 export function FinalCta() {
   return (

@@ -47,7 +47,7 @@ export function ScheduleForm() {
 
   const set = (k: keyof typeof EMPTY, v: string) => setForm((f) => ({ ...f, [k]: v.slice(0, 200) }));
 
-  const clearError = (k: string) => setInvalid((s) => (s[k] ? { ...s, [k]: false } : s));
+  const clearError = (k: "name" | "organization" | "role" | "email") => setInvalid((s) => (s[k] ? { ...s, [k]: false } : s));
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();

@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { Link } from "@tanstack/react-router";
+import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, Check } from "lucide-react";
+import { sendDiagnosticLead } from "@/lib/lead.functions";
 import { captureTracking, EMPTY_TRACKING, type Tracking } from "@/lib/tracking";
 import { cn } from "@/lib/utils";
 import { SectionTag } from "./shared";
@@ -30,6 +32,7 @@ export function ScheduleForm() {
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [tracking, setTracking] = useState<Tracking>(EMPTY_TRACKING);
+  const submitLead = useServerFn(sendDiagnosticLead);
 
   useEffect(() => {
     setTracking(captureTracking());
@@ -72,10 +75,28 @@ export function ScheduleForm() {
     }
     setError(null);
     setSending(true);
+    const now = new Date().toISOString();
     const sessionId =
       typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `dci-${Date.now()}`;
-    // Nada é enviado aqui: o webhook dispara uma única vez, no final do diagnóstico,
-    // com contato + respostas + UTMs juntos. Guardamos contato e sessão para o quiz usar.
+    await submitLead({
+      data: {
+        event: "agendamento_solicitado",
+        form: "agendar_conversa",
+        session_id: sessionId,
+        started_at: now,
+        submitted_at: now,
+        page_url: window.location.href,
+        contato_nome: f.name,
+        contato_organizacao: f.organization,
+        contato_cargo: f.role,
+        contato_email: f.email,
+        contato_telefone: f.phone,
+        ...tracking,
+        user_agent: navigator.userAgent,
+      },
+    }).catch(() => undefined);
+    // Guarda contato e sessão para o diagnóstico reutilizar (mesmo session_id no webhook
+    // e atualização da linha do lead na planilha ao concluir o quiz)
     try {
       window.sessionStorage.setItem("dci_lead_contact", JSON.stringify(f));
       window.sessionStorage.setItem("dci_lead_session", sessionId);

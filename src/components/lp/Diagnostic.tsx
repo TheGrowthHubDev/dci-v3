@@ -533,6 +533,7 @@ export function Diagnostic() {
                   Receber meu diagnóstico por e-mail
                 </button>
               </div>
+              {emailed && (
                 <p className="mt-5 inline-flex items-center gap-2 rounded-xl bg-brand-teal/20 px-4 py-3 text-sm font-semibold text-white">
                   <Sparkles className="size-4" aria-hidden="true" />
                   Anotado! Enviaremos o diagnóstico para {contact.email || "o seu e-mail"}.

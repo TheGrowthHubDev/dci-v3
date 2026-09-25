@@ -42,8 +42,14 @@ async function syncSheet(data: Record<string, unknown>) {
   const quizDone = event === "diagnostico_concluido";
 
   // Procura a linha existente do lead (mesmo nome + empresa), da mais recente para a mais antiga
-  const current = (await sheetsFetch(`/values/${SHEET}!A:M`)) as { values?: string[][] };
-  const rows = current.values ?? [];
+  // Se a leitura falhar (ex.: limite temporário do Google), segue e grava uma linha nova
+  let rows: string[][] = [];
+  try {
+    const current = (await sheetsFetch(`/values/${SHEET}!A:M`)) as { values?: string[][] };
+    rows = current.values ?? [];
+  } catch (err) {
+    console.error("[sheets] falha ao ler planilha", err);
+  }
   let rowNumber = 0;
   for (let i = rows.length - 1; i >= 1; i--) {
     const r = rows[i] ?? [];

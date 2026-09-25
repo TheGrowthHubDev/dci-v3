@@ -4,24 +4,50 @@ import { useServerFn } from "@tanstack/react-start";
 import { ArrowRight, Check } from "lucide-react";
 import { sendDiagnosticLead } from "@/lib/lead.functions";
 import { captureTracking, EMPTY_TRACKING, type Tracking } from "@/lib/tracking";
+import { cn } from "@/lib/utils";
 import { SectionTag } from "./shared";
 
 const FIELD =
   "mt-2 w-full rounded-xl border border-white/15 bg-white/5 px-4 py-3 text-sm text-white placeholder:text-white/40 outline-none transition focus:border-brand-light focus:bg-white/10";
+const FIELD_INVALID = "border-red-400/80 focus:border-red-400";
+
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/i;
 
 const EMPTY = { name: "", organization: "", role: "", email: "", phone: "" };
+
+/** Máscara de telefone (BR): (11) 91234-5678 */
+function maskPhone(value: string) {
+  const d = value.replace(/\D/g, "").slice(0, 11);
+  if (!d) return "";
+  if (d.length <= 2) return `(${d}`;
+  if (d.length <= 6) return `(${d.slice(0, 2)}) ${d.slice(2)}`;
+  if (d.length <= 10) return `(${d.slice(0, 2)}) ${d.slice(2, 6)}-${d.slice(6)}`;
+  return `(${d.slice(0, 2)}) ${d.slice(2, 7)}-${d.slice(7)}`;
+}
 
 export function ScheduleForm() {
   const [form, setForm] = useState(EMPTY);
   const [error, setError] = useState<string | null>(null);
+  const [invalid, setInvalid] = useState<Partial<Record<"name" | "organization" | "role" | "email", boolean>>>({});
   const [sending, setSending] = useState(false);
   const [done, setDone] = useState(false);
   const [tracking, setTracking] = useState<Tracking>(EMPTY_TRACKING);
   const submitLead = useServerFn(sendDiagnosticLead);
 
-  useEffect(() => setTracking(captureTracking()), []);
+  useEffect(() => {
+    setTracking(captureTracking());
+    // Se o lead já preencheu os dados antes nesta sessão, reaproveita
+    try {
+      const raw = window.sessionStorage.getItem("dci_lead_contact");
+      if (raw) setForm((f) => ({ ...f, ...(JSON.parse(raw) as typeof EMPTY) }));
+    } catch {
+      /* segue com o formulário vazio */
+    }
+  }, []);
 
   const set = (k: keyof typeof EMPTY, v: string) => setForm((f) => ({ ...f, [k]: v.slice(0, 200) }));
+
+  const clearError = (k: "name" | "organization" | "role" | "email") => setInvalid((s) => (s[k] ? { ...s, [k]: false } : s));
 
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
@@ -32,19 +58,31 @@ export function ScheduleForm() {
       email: form.email.trim(),
       phone: form.phone.trim(),
     };
-    if (!f.name || !f.organization || !f.role || !/\S+@\S+\.\S+/.test(f.email)) {
-      setError("Preencha nome, organização, cargo e um e-mail válido.");
+    const errors = {
+      name: !f.name,
+      organization: !f.organization,
+      role: !f.role,
+      email: !EMAIL_RE.test(f.email),
+    };
+    setInvalid(errors);
+    if (errors.name || errors.organization || errors.role || errors.email) {
+      setError(
+        errors.email && f.email
+          ? "Informe um e-mail válido, ex.: nome@empresa.com."
+          : "Preencha nome, organização e cargo, e informe um e-mail válido.",
+      );
       return;
     }
     setError(null);
     setSending(true);
     const now = new Date().toISOString();
+    const sessionId =
+      typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `dci-${Date.now()}`;
     await submitLead({
       data: {
         event: "agendamento_solicitado",
         form: "agendar_conversa",
-        session_id:
-          typeof crypto !== "undefined" && "randomUUID" in crypto ? crypto.randomUUID() : `dci-${Date.now()}`,
+        session_id: sessionId,
         started_at: now,
         submitted_at: now,
         page_url: window.location.href,
@@ -57,6 +95,14 @@ export function ScheduleForm() {
         user_agent: navigator.userAgent,
       },
     }).catch(() => undefined);
+    // Guarda contato e sessão para o diagnóstico reutilizar (mesmo session_id no webhook
+    // e atualização da linha do lead na planilha ao concluir o quiz)
+    try {
+      window.sessionStorage.setItem("dci_lead_contact", JSON.stringify(f));
+      window.sessionStorage.setItem("dci_lead_session", sessionId);
+    } catch {
+      /* sem persistência: o quiz segue sem contato */
+    }
     setSending(false);
     setDone(true);
   }
@@ -98,25 +144,71 @@ export function ScheduleForm() {
       <div className="mt-8 grid gap-4 sm:grid-cols-2">
         <div>
           <label htmlFor="ag-nome" className="text-sm font-semibold text-white/90">Nome</label>
-          <input id="ag-nome" autoComplete="name" className={FIELD} value={form.name} onChange={(e) => set("name", e.target.value)} />
+          <input
+            id="ag-nome"
+            autoComplete="name"
+            className={cn(FIELD, invalid.name && FIELD_INVALID)}
+            value={form.name}
+            onChange={(e) => {
+              set("name", e.target.value);
+              clearError("name");
+            }}
+          />
         </div>
         <div>
           <label htmlFor="ag-org" className="text-sm font-semibold text-white/90">Organização / Grupo / Família</label>
-          <input id="ag-org" autoComplete="organization" className={FIELD} value={form.organization} onChange={(e) => set("organization", e.target.value)} />
+          <input
+            id="ag-org"
+            autoComplete="organization"
+            className={cn(FIELD, invalid.organization && FIELD_INVALID)}
+            value={form.organization}
+            onChange={(e) => {
+              set("organization", e.target.value);
+              clearError("organization");
+            }}
+          />
         </div>
         <div>
           <label htmlFor="ag-cargo" className="text-sm font-semibold text-white/90">Cargo ou função</label>
-          <input id="ag-cargo" autoComplete="organization-title" className={FIELD} value={form.role} onChange={(e) => set("role", e.target.value)} />
+          <input
+            id="ag-cargo"
+            autoComplete="organization-title"
+            className={cn(FIELD, invalid.role && FIELD_INVALID)}
+            value={form.role}
+            onChange={(e) => {
+              set("role", e.target.value);
+              clearError("role");
+            }}
+          />
         </div>
         <div>
           <label htmlFor="ag-email" className="text-sm font-semibold text-white/90">E-mail corporativo</label>
-          <input id="ag-email" type="email" autoComplete="email" className={FIELD} value={form.email} onChange={(e) => set("email", e.target.value)} />
+          <input
+            id="ag-email"
+            type="email"
+            autoComplete="email"
+            className={cn(FIELD, invalid.email && FIELD_INVALID)}
+            value={form.email}
+            onChange={(e) => {
+              set("email", e.target.value);
+              clearError("email");
+            }}
+          />
         </div>
         <div className="sm:col-span-2">
           <label htmlFor="ag-tel" className="text-sm font-semibold text-white/90">
             WhatsApp / telefone <span className="font-normal text-white/50">(opcional)</span>
           </label>
-          <input id="ag-tel" type="tel" autoComplete="tel" className={FIELD} value={form.phone} onChange={(e) => set("phone", e.target.value)} />
+          <input
+            id="ag-tel"
+            type="tel"
+            inputMode="numeric"
+            autoComplete="tel"
+            placeholder="(11) 91234-5678"
+            className={FIELD}
+            value={form.phone}
+            onChange={(e) => set("phone", maskPhone(e.target.value))}
+          />
         </div>
       </div>
       {error && <p role="alert" className="mt-4 text-sm font-semibold text-destructive-foreground">{error}</p>}

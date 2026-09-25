@@ -5,7 +5,7 @@ import { sendDiagnosticLead } from "@/lib/lead.functions";
 import { captureTracking, EMPTY_TRACKING, type Tracking } from "@/lib/tracking";
 import { ArrowLeft, ArrowRight, Check, Mail, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { Logo, SCHEDULE_URL, SectionTag } from "./shared";
+import { Logo, SectionTag } from "./shared";
 import {
   EMPTY_ANSWERS,
   EXISTING_ASSETS,

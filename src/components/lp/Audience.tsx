@@ -1,3 +1,4 @@
+import { Link } from "@tanstack/react-router";
 import { ArrowRight, Award, Building2, Landmark, Users, type LucideIcon } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { BrandOrbit, Reveal, SectionNumber, SectionTag, useMouseGlow } from "./shared";
@@ -265,13 +266,13 @@ export function Audience() {
                   sentido avaliar na sua região.
                 </p>
               </div>
-              <a
-                href="#simulador"
+              <Link
+                to="/diagnostico"
                 className="btn-shine group inline-flex shrink-0 items-center gap-2 rounded-full bg-white px-8 py-4 text-sm font-bold text-brand"
               >
-                Simular Meu Impacto
+                Fazer diagnóstico
                 <ArrowRight className="size-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-              </a>
+              </Link>
             </div>
           </div>
         </Reveal>

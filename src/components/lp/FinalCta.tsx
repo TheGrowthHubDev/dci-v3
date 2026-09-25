@@ -1,4 +1,3 @@
-import { Link } from "@tanstack/react-router";
 import { ArrowRight, Mail, MapPin } from "lucide-react";
 import { ScheduleForm } from "./ScheduleForm";
 import { ADDRESS, BrandOrbit, CONTACT_EMAIL, Reveal, SectionTag, WordReveal } from "./shared";

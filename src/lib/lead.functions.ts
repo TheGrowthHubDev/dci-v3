@@ -49,7 +49,7 @@ async function syncSheet(data: Record<string, unknown>) {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
-  }).format(new Date());
+  }).format(new Date()).replace(",", "");
 
   // Procura a linha existente do lead (mesmo nome + empresa), da mais recente para a mais antiga
   // Se a leitura falhar (ex.: limite temporário do Google), segue e grava uma linha nova

@@ -55,7 +55,7 @@ async function syncSheet(data: Record<string, unknown>) {
   // Se a leitura falhar (ex.: limite temporário do Google), segue e grava uma linha nova
   let rows: string[][] = [];
   try {
-    const current = (await sheetsFetch(`/values/${SHEET}!A:O`)) as { values?: string[][] };
+    const current = (await sheetsFetch(`/values/${SHEET}!A:P`)) as { values?: string[][] };
     rows = current.values ?? [];
   } catch (err) {
     console.error("[sheets] falha ao ler planilha", err);
@@ -80,7 +80,8 @@ async function syncSheet(data: Record<string, unknown>) {
   }
 
   // Ordem das colunas: data, empresa, nome, cargo, telefone, email, utm_campaign,
-  // utm_term, utm_source, utm_content, utm_medium, dispositivo, fbclid, gclid, preencheu quiz?
+  // utm_term, utm_source, utm_content, utm_medium, dispositivo, fbclid, gclid,
+  // preencheu quiz?, url
   const row = [
     cadastro,
     empresa,
@@ -97,6 +98,8 @@ async function syncSheet(data: Record<string, unknown>) {
     str(data["fbclid"]),
     str(data["gclid"]),
     quizDone ? "sim" : "não",
+    // URL completa de chegada do lead (com UTMs), capturada na primeira visita
+    str(data["landing_page"]) || str(data["page_url"]),
   ];
   await sheetsFetch(`/values/${SHEET}!A:O:append?valueInputOption=RAW&insertDataOption=INSERT_ROWS`, {
     method: "POST",

@@ -106,6 +106,13 @@ export function Diagnostic() {
 
   useEffect(() => {
     setTracking(captureTracking());
+    // Evento GTM: o usuário chegou ao diagnóstico (clicou em "Fazer diagnóstico")
+    // Usado como gatilho de tag de evento no GTM / Facebook Ads.
+    (window as unknown as { dataLayer: unknown[] }).dataLayer =
+      (window as unknown as { dataLayer: unknown[] }).dataLayer || [];
+    (window as unknown as { dataLayer: unknown[] }).dataLayer.push({
+      event: "iniciar_diagnostico",
+    });
     // Contato capturado no formulário de agendamento no início da jornada
     try {
       const raw = window.sessionStorage.getItem("dci_lead_contact");

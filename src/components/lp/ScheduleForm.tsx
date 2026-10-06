@@ -106,6 +106,10 @@ export function ScheduleForm() {
     } catch {
       /* sem persistência: o quiz segue sem contato */
     }
+    // Evento de cadastro para o GTM / Facebook Ads: dispara junto com a confirmação
+    const w = window as unknown as { dataLayer: unknown[] };
+    w.dataLayer = w.dataLayer || [];
+    w.dataLayer.push({ event: "gerar_lead" });
     setSending(false);
     setDone(true);
   }
